@@ -1,0 +1,134 @@
+buildscript {
+	ext {
+		querydslversion = "5.0.0"
+	}
+}
+
+plugins {
+	id 'java'
+	id 'jacoco'
+	id 'org.springframework.boot' version '3.0.5'
+	id 'io.spring.dependency-management' version '1.1.0'
+}
+
+Properties properties = new Properties()
+Reader reader = new FileReader(project.rootProject.file('src/main/resources/application.yml'))
+properties.load(reader)
+group = 'com.gora'
+version = properties.containsKey("app.version")
+sourceCompatibility = JavaVersion.VERSION_17
+
+repositories {
+	mavenCentral()
+}
+
+dependencies {
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	implementation 'org.springframework.boot:spring-boot-starter-mail'
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+	implementation 'org.springframework.boot:spring-boot-starter-thymeleaf'
+	implementation 'org.springframework.boot:spring-boot-starter-validation'
+	implementation 'org.springframework.boot:spring-boot-starter-web'
+	implementation 'org.springframework.boot:spring-boot-starter-websocket'
+	implementation 'org.springframework.boot:spring-boot-starter-oauth2-client:3.0.6'
+
+//	swagger
+	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
+
+	implementation 'org.modelmapper:modelmapper:3.1.1'
+	implementation 'org.thymeleaf.extras:thymeleaf-extras-springsecurity6'
+	implementation 'org.apache.commons:commons-lang3:3.12.0'
+	implementation 'io.jsonwebtoken:jjwt-api:0.10.7'
+	runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.10.7'
+	runtimeOnly 'io.jsonwebtoken:jjwt-jackson:0.10.7'
+
+//	querydsl
+	implementation "com.querydsl:querydsl-jpa:${querydslversion}:jakarta"
+	implementation "com.querydsl:querydsl-apt:${querydslversion}:jakarta"
+	implementation "com.querydsl:querydsl-core:${querydslversion}"
+
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+	annotationProcessor("jakarta.persistence:jakarta.persistence-api")
+	annotationProcessor("jakarta.annotation:jakarta.annotation-api")
+
+	compileOnly 'org.projectlombok:lombok'
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+	runtimeOnly 'com.mysql:mysql-connector-j'
+	annotationProcessor 'org.projectlombok:lombok'
+
+//	test
+	testCompileOnly 'org.projectlombok:lombok'
+	testAnnotationProcessor 'org.projectlombok:lombok'
+	testImplementation 'org.testcontainers:testcontainers:1.18.0'
+	testImplementation 'org.testcontainers:mysql:1.18.0'
+	testImplementation 'org.testcontainers:junit-jupiter:1.18.0'
+	testImplementation 'org.springframework.boot:spring-boot-starter-test'
+	testImplementation 'org.springframework.batch:spring-batch-test'
+	testImplementation 'org.springframework.security:spring-security-test'
+}
+
+tasks.named('test') {
+	useJUnitPlatform()
+}
+
+// querydsl 사용할 경로 지정합니다.
+def querydslDir = "$buildDir/generated/'querydsl'"
+
+// build시 사용할 sourceSet 추가 설정
+sourceSets {
+	main.java.srcDir querydslDir
+}
+
+tasks.withType(JavaCompile) {
+	options.annotationProcessorGeneratedSourcesDirectory = file(querydslDir)
+}
+
+// querydsl이 compileClassPath를 상속하도록 설정
+configurations {
+	compileOnly {
+		extendsFrom annotationProcessor
+	}
+	querydsl.extendsFrom compileClasspath
+}
+
+//test report
+jacoco {
+	toolVersion = "0.8.10"
+	// reportsDir = file("$buildDir/jacoco/")
+}
+
+jacocoTestReport {
+	reports {
+		xml.required = false
+		csv.required = false
+		html.required = true
+	}
+}
+jacocoTestCoverageVerification{
+	String minimumEnv = System.getenv("COVEREGE_LIMIT_PER");
+	BigDecimal minimum;
+	if(minimumEnv == null){
+		minimum = 0.70
+	}else{
+		minimum = Double.parseDouble(minimumEnv);
+	}
+	violationRules {
+		rule {
+			enabled = true
+			element = 'CLASS'
+			includes = []
+			excludes = []
+			limit {
+				counter = 'INSTRUCTION'
+				value = 'COVEREDRATIO'
+				minimum = minimum
+			}
+		}
+	}
+}
+
+test {
+	useJUnitPlatform()
+	finalizedBy jacocoTestReport
+}

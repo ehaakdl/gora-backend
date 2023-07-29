@@ -1,0 +1,53 @@
+server:
+  error:
+    whitelabel:
+      enabled: false
+
+spring:
+  mvc:
+    static-path-pattern: /static/**
+
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    cache: false
+
+  security:
+    oauth2:
+      client:
+        registration:
+          google:
+            client-id: 494377772043-ebq2t32hv48qjejjs5avmetn25vdoar2.apps.googleusercontent.com
+            client-secret: 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
+            redirect-uri: "{baseUrl}/oauth2/callback/{registrationId}"
+            scope:
+              - profile
+              - email
+  datasource:
+    url: jdbc:mysql://${DB_HOST}:${DB_PORT}/${DB_NAME}?serverTimezone=UTC&characterEncoding=UTF-8
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+
+  jpa:
+    database: mysql
+    hibernate:
+      ddl-auto: create
+
+
+
+springdoc:
+  api-docs:
+    path: /docs
+
+  swagger-ui:
+    path: /swagger-ui
+    display-request-duration: true
+
+  cache:
+    disabled: true
+  paths-to-match: /v1/**
+#    todo 기본 에러페이지 추가
+
+app:
+  version: 1.0.0
