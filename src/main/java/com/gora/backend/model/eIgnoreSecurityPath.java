@@ -11,6 +11,7 @@ public enum eIgnoreSecurityPath {
     , ERROR(AntPathRequestMatcher.antMatcher("/error"))
     , OAUTH(AntPathRequestMatcher.antMatcher("/oauth2/**"))
     , LOGIN(AntPathRequestMatcher.antMatcher("/test"))
+    , DOWNLOAD(AntPathRequestMatcher.antMatcher("/v1/download/client"))
     , SWAGGER_PREFIX(AntPathRequestMatcher.antMatcher("/swagger-ui/**"))
     , SWAGGER_DOCS(AntPathRequestMatcher.antMatcher("/docs"))
     , SWAGGER_DOCS_PREFIX(AntPathRequestMatcher.antMatcher("/docs/**"))

@@ -1,5 +1,6 @@
 package com.gora.backend.controller;
 
+import com.gora.backend.util.CommonUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.core.io.ClassPathResource;
 import org.springframework.core.io.InputStreamResource;
@@ -21,7 +22,7 @@ import java.io.IOException;
 public class DownloadController {
     @GetMapping("/client")
     public ResponseEntity<InputStreamResource> downloadClient() throws IOException {
-        Resource resource = new ClassPathResource("application.yml");
+        Resource resource = new ClassPathResource("game-client.zip");
         File file = resource.getFile();
 
         // Set the appropriate headers
