@@ -18,7 +18,7 @@ import java.io.FileInputStream;
 import java.io.IOException;
 
 @RestController
-@RequestMapping("/v1/download")
+@RequestMapping("/api/v1/download")
 public class DownloadController {
     @GetMapping("/client")
     public ResponseEntity<InputStreamResource> downloadClient() throws IOException {

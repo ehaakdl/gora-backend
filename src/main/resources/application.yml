@@ -46,7 +46,7 @@ springdoc:
 
   cache:
     disabled: true
-  paths-to-match: /v1/**
+  paths-to-match: /api/v1/**
 #    todo 기본 에러페이지 추가
 
 app:

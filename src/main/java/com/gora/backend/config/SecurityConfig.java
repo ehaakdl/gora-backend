@@ -19,6 +19,9 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
 import static com.gora.backend.model.eIgnoreSecurityPath.getAntRequestMatchers;
 
@@ -39,6 +42,8 @@ public class SecurityConfig {
 
         http.sessionManagement()
                 .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
+                .and()
+                .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .authorizeHttpRequests()
                 .requestMatchers(getAntRequestMatchers())
@@ -86,4 +91,16 @@ public class SecurityConfig {
         return new JwtTokenProvider(userDetailsService(),tokenRepository, tokenUtils);
     }
 
+    @Bean
+    public CorsConfigurationSource corsConfigurationSource() {
+        CorsConfiguration configuration = new CorsConfiguration();
+
+        configuration.addAllowedOrigin("*");
+        configuration.addAllowedHeader("*");
+        configuration.addAllowedMethod("*");
+
+        UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+        source.registerCorsConfiguration("/**", configuration);
+        return source;
+    }
 }
