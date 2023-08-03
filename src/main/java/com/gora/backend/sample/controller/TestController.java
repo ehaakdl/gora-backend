@@ -14,6 +14,7 @@ import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Collections;
@@ -113,19 +114,14 @@ public class TestController {
         return "aa";
     }
 
-    @RequestMapping("/login")
-    public String login() {
-        return "login";
-    }
-
+//    @GetMapping("/oauth2/callback/google")
+//    @ResponseBody
+//    public void callback(@RequestParam String code){
+//        System.out.printf("test");
+//    }
     @GetMapping("/")
     @ResponseBody
     public String indewqeex() {
         return "aaqewwqeqw";
-    }
-
-    @GetMapping("/test")
-    public String test() {
-        return "redirect:/oauth2/authorize/google";
     }
 }
