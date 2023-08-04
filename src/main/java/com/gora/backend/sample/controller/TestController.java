@@ -102,9 +102,9 @@ public class TestController {
     @ResponseBody
     public void indewwqex() {
         // when similar source object is provided
-        Game game = new Game(1L, "Game 1");
-        GameDTO gameDTO = modelMapper.map(game, GameDTO.class);
-        roleCustomRepository.get();
+//        Game game = new Game(1L, "Game 1");
+//        GameDTO gameDTO = modelMapper.map(game, GameDTO.class);
+//        roleCustomRepository.get();
         System.out.printf("wqewq");
     }
 
