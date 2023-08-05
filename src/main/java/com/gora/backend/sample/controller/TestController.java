@@ -104,25 +104,34 @@ public class TestController {
     @org.springframework.transaction.annotation.Transactional
     public void dbTest() {
         PrivilegeEntity privilegeEntity=privilegeRepository.save(PrivilegeEntity.builder()
-                        .code("ewqeq")
+                        .createdBy(1L)
+                .updatedBy(1L)
+                .code("ewqeq")
+
                         .displayName("eqwe")
                 .build());
-        RoleEntity roleEntity = roleRepository.save(RoleEntity.builder().code("qwewe").displayName("eqwewqe").build());
+        RoleEntity roleEntity = roleRepository.save(RoleEntity.builder().createdBy(1L)
+                .updatedBy(1L).code("qwewe").displayName("eqwewqe").build());
         rolePrivilegeRepository.save(RolePrivilegeEntity.builder()
-                        .createdAt(new Date())
-                        .roleSeq(roleEntity.getSeq())
+                .createdBy(1L)
+                .updatedBy(1L)
+                .roleSeq(roleEntity.getSeq())
                         .privilegeSeq(privilegeEntity.getSeq())
                 .build());
 
         socialUserRepository.save(SocialUserEntity.builder()
-                        .socialType(eSocialType.google)
+                .createdBy(1L)
+                .updatedBy(1L)
+                .socialType(eSocialType.google)
                 .build());
         UserEntity userEntity = userRepository.save(UserEntity.builder()
+                .createdBy(1L)
+                .updatedBy(1L)
                         .email("eqweq")
-                .userType(eUserType.basic)
+                .type(eUserType.basic)
                 .password("wqe")
                 .build());
-        tokenRepository.save(TokenEntity.createAccessToken("qwew", "qweqwe",new Date()));
+        tokenRepository.save(TokenEntity.createAccessToken(userEntity.getSeq(),"qwew", "qweqwe",new Date()));
         userRoleRepository.save(UserRoleEntity.builder()
                         .userSeq(userEntity.getSeq())
                         .roleSeq(roleEntity.getSeq())

@@ -37,7 +37,7 @@ public class LoginSuccessHandler {
 
         String accessToken = tokenUtils.createToken(claimsMap, ACCESS, accessTokenExpireAt);
         String refreshToken = tokenUtils.createToken(claimsMap, REFRESH, refreshTokenExpireAt);
-        tokenRepository.save(TokenEntity.createAccessToken(accessToken, refreshToken, accessTokenExpireAt));
+        tokenRepository.save(TokenEntity.createAccessToken(1L,accessToken, refreshToken, accessTokenExpireAt));
 
         String frontUrl = environment.getProperty(EnvironmentKey.APP_FRONT_URL);
         response.setHeader(HttpHeaders.AUTHORIZATION, accessToken);

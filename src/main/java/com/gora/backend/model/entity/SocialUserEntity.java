@@ -5,14 +5,17 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+
+import java.util.Date;
 
 @Entity
 @Table(name = "social_user")
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
-public class SocialUserEntity extends DefaultColumn {
+public class SocialUserEntity extends DefaultColumn{
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;

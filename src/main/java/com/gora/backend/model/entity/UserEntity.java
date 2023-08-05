@@ -6,13 +6,14 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 import java.util.*;
 
 @Entity
 @Table(name = "user")
 @Getter
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 public class UserEntity extends DefaultColumn {
@@ -27,7 +28,7 @@ public class UserEntity extends DefaultColumn {
     private Boolean disable;
     @Column
     @Enumerated(EnumType.STRING)
-    private eUserType userType;
+    private eUserType type;
 
     public boolean isDisable() {
         return Objects.requireNonNullElse(this.disable, false);

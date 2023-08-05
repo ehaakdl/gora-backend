@@ -5,12 +5,13 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Table(name = "privilege")
 @Getter
 @AllArgsConstructor
-@Builder
+@SuperBuilder
 @NoArgsConstructor
 public class PrivilegeEntity extends DefaultColumn{
     @Id

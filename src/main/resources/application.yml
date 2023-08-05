@@ -30,8 +30,9 @@ spring:
 
   jpa:
     database: mysql
-
-
+    properties:
+      hibernate:
+        format_sql: true
 
 springdoc:
   api-docs:

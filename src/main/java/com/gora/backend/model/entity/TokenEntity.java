@@ -12,20 +12,20 @@ import java.util.Date;
 @Builder
 @AllArgsConstructor(access = AccessLevel.PROTECTED)
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class TokenEntity extends DefaultColumn{
+public class TokenEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long seq;
-    @Column(name = "user_seq")
+    @Column
     private long userSeq;
     @Column
     private String refresh;
-    @Column(name = "access_expire_at")
+    @Column
     private Date accessExpireAt;
-    @Column(name = "access")
+    @Column
     private String access;
 
-    public static TokenEntity createAccessToken(String access, String refresh, Date accessExpireAt){
+    public static TokenEntity createAccessToken(Long userSeq,String access, String refresh, Date accessExpireAt){
         if(StringUtils.isAnyBlank(access, refresh) || accessExpireAt == null){
             throw new IllegalArgumentException();
         }
@@ -34,6 +34,7 @@ public class TokenEntity extends DefaultColumn{
                 .access(access)
                 .refresh(refresh)
                 .accessExpireAt(accessExpireAt)
+                .userSeq(userSeq)
                 .build();
     }
 }

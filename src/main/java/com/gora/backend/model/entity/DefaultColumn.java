@@ -1,20 +1,36 @@
 package com.gora.backend.model.entity;
 
 import jakarta.persistence.Column;
+import jakarta.persistence.MappedSuperclass;
+import jakarta.persistence.Temporal;
+import jakarta.persistence.TemporalType;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
+import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
 
-@Builder
+
 @AllArgsConstructor
 @NoArgsConstructor
+@SuperBuilder
+@MappedSuperclass
 public abstract class DefaultColumn {
-    @Column(name = "created_at")
+    @CreationTimestamp
+    @Column
     private Date createdAt;
-    @Column(name = "updated_at")
+    @Column
+    private Date deletedAt;
+    @UpdateTimestamp
+    @Column
     private Date updatedAt;
-    @Column(name = "updated_by")
+    @Column
+    private Long createdBy;
+    @Column
     private Long updatedBy;
+    @Column
+    private Long deletedBy;
 }
