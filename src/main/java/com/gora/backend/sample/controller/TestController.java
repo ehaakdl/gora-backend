@@ -98,7 +98,7 @@ public class TestController {
     private final TokenRepository tokenRepository;
     private final UserRoleRepository userRoleRepository;
 
-//    todo 자동으로 생성 수정 시간 값 셋팅 추가하기
+//    todo entity 기반으로 CRUD 가능하게하기
     @GetMapping("/db")
     @ResponseBody
     @org.springframework.transaction.annotation.Transactional
