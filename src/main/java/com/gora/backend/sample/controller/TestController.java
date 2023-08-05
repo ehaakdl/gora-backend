@@ -1,42 +1,27 @@
 package com.gora.backend.sample.controller;
 
-import com.gora.backend.model.entity.user.UserEntity;
-import com.gora.backend.repository.UserRepository;
+import com.gora.backend.model.entity.*;
+import com.gora.backend.repository.*;
 import com.gora.backend.sample.querydsl.RoleCustomRepository;
 import jakarta.transaction.Transactional;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import lombok.*;
 import org.modelmapper.ModelMapper;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import java.util.Collections;
+import java.util.Date;
 import java.util.Map;
 
 @Controller
+@RequiredArgsConstructor
 public class TestController {
-    @Autowired
-    private UserRepository userRepository;
-    @Autowired
-    private RoleCustomRepository roleCustomRepository;
-    @GetMapping("/user")
-    @ResponseBody
-    @Transactional
-    public Map<String, Object> user(@AuthenticationPrincipal
-                                    String principal) {
+    private final ModelMapper modelMapper;
+    private final UserRepository userRepository;
+    private final RoleCustomRepository roleCustomRepository;
 
-        userRepository.save(UserEntity.builder().email("wqewqe").build());
-        roleCustomRepository.save();
-//        throw new RuntimeException();
-        return Collections.singletonMap("name", roleCustomRepository.get());
-    }
     @NoArgsConstructor
     @AllArgsConstructor
     @Getter
@@ -96,32 +81,60 @@ public class TestController {
         // constructors, getters and setters
     }
 
-    @Autowired
-    private ModelMapper modelMapper;
-    @GetMapping("/b")
+    @GetMapping("/user")
     @ResponseBody
-    public void indewwqex() {
+    @Transactional
+    public Map<String, Object> user(@AuthenticationPrincipal
+                                    String principal) {
+
+
+        return Collections.singletonMap("name", roleCustomRepository.get());
+    }
+
+    private final PrivilegeRepository privilegeRepository;
+    private final RolePrivilegeRepository rolePrivilegeRepository;
+    private final RoleRepository roleRepository;
+    private final SocialUserRepository socialUserRepository;
+    private final TokenRepository tokenRepository;
+    private final UserRoleRepository userRoleRepository;
+
+//    todo 자동으로 생성 수정 시간 값 셋팅 추가하기
+    @GetMapping("/db")
+    @ResponseBody
+    @org.springframework.transaction.annotation.Transactional
+    public void dbTest() {
+        PrivilegeEntity privilegeEntity=privilegeRepository.save(PrivilegeEntity.builder()
+                        .code("ewqeq")
+                        .displayName("eqwe")
+                .build());
+        RoleEntity roleEntity = roleRepository.save(RoleEntity.builder().code("qwewe").displayName("eqwewqe").build());
+        rolePrivilegeRepository.save(RolePrivilegeEntity.builder()
+                        .createdAt(new Date())
+                        .roleSeq(roleEntity.getSeq())
+                        .privilegeSeq(privilegeEntity.getSeq())
+                .build());
+
+        socialUserRepository.save(SocialUserEntity.builder()
+                        .socialType(eSocialType.google)
+                .build());
+        UserEntity userEntity = userRepository.save(UserEntity.builder()
+                        .email("eqweq")
+                .userType(eUserType.basic)
+                .password("wqe")
+                .build());
+        tokenRepository.save(TokenEntity.createAccessToken("qwew", "qweqwe",new Date()));
+        userRoleRepository.save(UserRoleEntity.builder()
+                        .userSeq(userEntity.getSeq())
+                        .roleSeq(roleEntity.getSeq())
+                .build());
+
+    }
+
+    @GetMapping("/modelmapper")
+    @ResponseBody
+    public void modelmapper() {
         // when similar source object is provided
-//        Game game = new Game(1L, "Game 1");
-//        GameDTO gameDTO = modelMapper.map(game, GameDTO.class);
-//        roleCustomRepository.get();
-        System.out.printf("wqewq");
-    }
-
-    @GetMapping("/a")
-    @ResponseBody
-    public String index() {
-        return "aa";
-    }
-
-//    @GetMapping("/oauth2/callback/google")
-//    @ResponseBody
-//    public void callback(@RequestParam String code){
-//        System.out.printf("test");
-//    }
-    @GetMapping("/")
-    @ResponseBody
-    public String indewqeex() {
-        return "aaqewwqeqw";
+        Game game = new Game(1L, "Game 1");
+        GameDTO gameDTO = modelMapper.map(game, GameDTO.class);
     }
 }

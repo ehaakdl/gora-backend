@@ -1,6 +1,6 @@
 package com.gora.backend.service.security;
 
-import com.gora.backend.model.entity.user.UserEntity;
+import com.gora.backend.model.entity.UserEntity;
 import com.gora.backend.repository.UserRepository;
 import com.gora.backend.repository.UserRoleCustomRepository;
 import lombok.RequiredArgsConstructor;

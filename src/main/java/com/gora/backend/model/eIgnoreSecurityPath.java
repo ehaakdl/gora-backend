@@ -9,11 +9,8 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 public enum eIgnoreSecurityPath {
     ICON(AntPathRequestMatcher.antMatcher("/*.ico"))
     , ERROR(AntPathRequestMatcher.antMatcher("/error"))
-    , OAUTH(AntPathRequestMatcher.antMatcher("/oauth2/**"))
-    , LOGIN(AntPathRequestMatcher.antMatcher("/test"))
-    , TEST(AntPathRequestMatcher.antMatcher("/a"))
-    , AUTH(AntPathRequestMatcher.antMatcher("/auth/**"))
-    , DOWNLOAD(AntPathRequestMatcher.antMatcher("/api/v1/download/client"))
+    , OAUTH2(AntPathRequestMatcher.antMatcher("/oauth2/**"))
+    , DOWNLOAD_CLIENT(AntPathRequestMatcher.antMatcher("/api/v1/download/client"))
     , SWAGGER_PREFIX(AntPathRequestMatcher.antMatcher("/swagger-ui/**"))
     , SWAGGER_DOCS(AntPathRequestMatcher.antMatcher("/docs"))
     , SWAGGER_DOCS_PREFIX(AntPathRequestMatcher.antMatcher("/docs/**"))

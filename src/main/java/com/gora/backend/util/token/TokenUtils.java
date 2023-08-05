@@ -17,7 +17,8 @@ import java.util.Map;
 @Component
 @RequiredArgsConstructor
 public class TokenUtils {
-    private static final String SECRET_KEY = "1234";
+//    32글자 필요
+    private static final String SECRET_KEY = "a89e2da3-704d-4ff0-a803-c8d8dc57cbf1";
     private final Environment environment;
 
     private Key getSecretKey() {

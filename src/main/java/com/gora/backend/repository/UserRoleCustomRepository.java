@@ -1,6 +1,6 @@
 package com.gora.backend.repository;
 
-import com.gora.backend.model.entity.user.UserEntity;
+import com.gora.backend.model.entity.UserEntity;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
@@ -10,7 +10,7 @@ import java.util.List;
 import static com.gora.backend.model.entity.QPrivilegeEntity.privilegeEntity;
 import static com.gora.backend.model.entity.QRoleEntity.roleEntity;
 import static com.gora.backend.model.entity.QRolePrivilegeEntity.rolePrivilegeEntity;
-import static com.gora.backend.model.entity.user.QUserRoleEntity.userRoleEntity;
+import static com.gora.backend.model.entity.QUserRoleEntity.userRoleEntity;
 
 @Repository
 @RequiredArgsConstructor
@@ -23,7 +23,7 @@ public class UserRoleCustomRepository {
 //    inner join privilege on role_privilege.privilege_seq = privilege.seq
 //    ;
     public List<String> findUserPrivilege(UserEntity user) {
-        return jpaQueryFactory.select(privilegeEntity.name)
+        return jpaQueryFactory.select(privilegeEntity.displayName)
                 .from(userRoleEntity)
                 .innerJoin(roleEntity).on(
                         userRoleEntity.roleSeq.eq(roleEntity.seq)

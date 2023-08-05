@@ -43,16 +43,15 @@ public class SecurityConfig {
                 .csrf().disable()
                 .headers().frameOptions().disable()
                 .and()
-//                todo 이거 빼고도 다운로드 되는지 확인 필요
-//                .cors().configurationSource(corsConfigurationSource())
-//                .and()
+//                웹에서 다운로드 호출 시 cors 발생해서 필요
+                .cors().configurationSource(corsConfigurationSource())
+                .and()
                 .authorizeHttpRequests()
-                .requestMatchers(getAntRequestMatchers()).permitAll()
-                .anyRequest().authenticated()
+                    .requestMatchers(getAntRequestMatchers()).permitAll()
+                .anyRequest()
+                    .authenticated()
                 .and()
                 .logout()
-//               적용되는지 확인필요
-                .logoutUrl("/a")
 //                todo 리다이렉션 안됨 핸들러 들어오기는함
 //                .logoutSuccessHandler((request, response, authentication) -> {
 //                    response.sendRedirect("/");
@@ -61,19 +60,15 @@ public class SecurityConfig {
 //                })
                 .and()
                 .oauth2Login()
-                .authorizationEndpoint()
-                .baseUri("/oauth2/authorize")
-                .and()
-                .loginPage(loginPageUrl)
-                .successHandler((request, response, authentication) -> {
-                    response.sendRedirect("/b");
-                    System.out.printf("success");
-                })
-                .failureHandler((request, response, exception) -> {
-                    System.out.printf("fail");
-                })
-                .userInfoEndpoint()
-                .userService(oauth2UserService());
+                    .authorizationEndpoint()
+//                oauth2Login만 하면 필요없는데 추가설정 들어가니까 이 url 없으면 안됨
+                        .baseUri("/oauth2/authorize")
+                    .and()
+                    .loginPage(loginPageUrl)
+                    .successHandler(new AuthenticationSuccessHandlerImpl(loginSuccessHandler))
+                    .failureHandler(new AuthenticationFailHandlerImpl())
+                    .userInfoEndpoint()
+                        .userService(oauth2UserService());
 
 //        http
 //                .sessionManagement()

@@ -1,6 +1,6 @@
 package com.gora.backend.sample.querydsl;
 
-import com.gora.backend.model.entity.user.QUserEntity;
+import com.gora.backend.model.entity.QUserEntity;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;

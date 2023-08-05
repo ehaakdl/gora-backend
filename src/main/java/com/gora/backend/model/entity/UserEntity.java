@@ -1,4 +1,4 @@
-package com.gora.backend.model.entity.user;
+package com.gora.backend.model.entity;
 
 import com.gora.backend.model.entity.DefaultColumn;
 import jakarta.persistence.*;
@@ -25,6 +25,9 @@ public class UserEntity extends DefaultColumn {
     private String password;
     @Column
     private Boolean disable;
+    @Column
+    @Enumerated(EnumType.STRING)
+    private eUserType userType;
 
     public boolean isDisable() {
         return Objects.requireNonNullElse(this.disable, false);

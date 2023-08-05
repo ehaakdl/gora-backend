@@ -7,17 +7,16 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "privilege")
+@Table(name = "social_user")
 @Getter
-@AllArgsConstructor
 @Builder
 @NoArgsConstructor
-public class PrivilegeEntity extends DefaultColumn{
+@AllArgsConstructor
+public class SocialUserEntity extends DefaultColumn {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long seq;
-    @Column(name = "display_name")
-    private String displayName;
+    private Long seq;
     @Column
-    private String code;
+    @Enumerated(EnumType.STRING)
+    private eSocialType socialType;
 }
