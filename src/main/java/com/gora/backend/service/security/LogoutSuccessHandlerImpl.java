@@ -9,6 +9,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.web.authentication.logout.LogoutSuccessHandler;
 import org.springframework.stereotype.Component;
@@ -26,7 +27,7 @@ public class LogoutSuccessHandlerImpl implements LogoutSuccessHandler {
     @Transactional
 //    todo 트랜잭션 확인
     public void onLogoutSuccess(HttpServletRequest request, HttpServletResponse response, Authentication authentication) throws IOException, ServletException {
-        String accessToken = request.getHeader(HeaderName.ACCESS_TOKEN.name());
+        String accessToken = request.getHeader(HttpHeaders.AUTHORIZATION);
         if(accessToken == null){
             return;
         }
