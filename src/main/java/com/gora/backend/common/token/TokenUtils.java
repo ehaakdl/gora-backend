@@ -1,7 +1,5 @@
-package com.gora.backend.util.token;
+package com.gora.backend.common.token;
 
-import com.gora.backend.constant.EnvironmentKey;
-import com.gora.backend.model.LoginTokenPair;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;

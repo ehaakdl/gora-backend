@@ -1,9 +1,7 @@
-package com.gora.backend.util.token;
+package com.gora.backend.common.token;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-
-import static com.gora.backend.constant.ClaimsName.EMAIL;
 
 @RequiredArgsConstructor
 @Getter

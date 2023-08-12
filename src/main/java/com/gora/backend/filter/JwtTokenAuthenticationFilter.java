@@ -1,7 +1,7 @@
 package com.gora.backend.filter;
 
 import com.gora.backend.service.security.JwtTokenProvider;
-import com.gora.backend.util.token.TokenUtils;
+import com.gora.backend.common.token.TokenUtils;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

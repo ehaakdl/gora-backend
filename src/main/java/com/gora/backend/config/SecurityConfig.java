@@ -1,24 +1,20 @@
 package com.gora.backend.config;
 
-import com.gora.backend.constant.EnvironmentKey;
-import com.gora.backend.constant.FrontUrl;
-import com.gora.backend.filter.JwtTokenAuthenticationFilter;
+import com.gora.backend.common.EnvironmentKey;
+import com.gora.backend.common.FrontUrl;
 import com.gora.backend.handler.LoginSuccessHandler;
-import com.gora.backend.model.eIgnoreSecurityPath;
 import com.gora.backend.repository.TokenRepository;
 import com.gora.backend.repository.UserRepository;
 import com.gora.backend.repository.UserRoleCustomRepository;
 import com.gora.backend.service.security.*;
-import com.gora.backend.util.token.TokenUtils;
+import com.gora.backend.common.token.TokenUtils;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.config.http.SessionCreationPolicy;
 import org.springframework.security.web.SecurityFilterChain;
-import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;

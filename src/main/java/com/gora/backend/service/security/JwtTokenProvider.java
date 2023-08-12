@@ -3,7 +3,7 @@ package com.gora.backend.service.security;
 import com.gora.backend.exception.BadRequestException;
 import com.gora.backend.model.entity.TokenEntity;
 import com.gora.backend.repository.TokenRepository;
-import com.gora.backend.util.token.TokenUtils;
+import com.gora.backend.common.token.TokenUtils;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -12,7 +12,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 
 import java.util.Optional;
 
-import static com.gora.backend.constant.ClaimsName.EMAIL;
+import static com.gora.backend.common.ClaimsName.EMAIL;
 
 @Slf4j
 @RequiredArgsConstructor

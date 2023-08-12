@@ -1,6 +1,6 @@
 package com.gora.backend.service.security;
 
-import com.gora.backend.util.CookieUtils;
+import com.gora.backend.common.CookieUtils;
 import com.nimbusds.oauth2.sdk.util.StringUtils;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
