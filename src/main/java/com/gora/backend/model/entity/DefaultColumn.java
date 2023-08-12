@@ -8,8 +8,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
-import org.hibernate.annotations.CreationTimestamp;
-import org.hibernate.annotations.UpdateTimestamp;
+import org.hibernate.annotations.*;
 
 import java.util.Date;
 
@@ -30,6 +29,8 @@ public abstract class DefaultColumn {
     @Column
     private Long createdBy;
     @Column
+//    todo mysql 8 버전 on update 에 -1 추가못함
+    @ColumnDefault("-1")
     private Long updatedBy;
     @Column
     private Long deletedBy;

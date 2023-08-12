@@ -98,7 +98,13 @@ public class TestController {
     private final TokenRepository tokenRepository;
     private final UserRoleRepository userRoleRepository;
 
-//    todo entity 기반으로 CRUD 가능하게하기
+    @GetMapping("/testdb")
+    @ResponseBody
+    @org.springframework.transaction.annotation.Transactional
+    public String wqe(){
+        userRepository.findByEmailAndDisable("ehaakdl@gmail.com",false).get().setDisable(true);
+        return "wqewqe";
+    }
     @GetMapping("/db")
     @ResponseBody
     @org.springframework.transaction.annotation.Transactional
@@ -131,7 +137,7 @@ public class TestController {
                 .type(eUserType.basic)
                 .password("wqe")
                 .build());
-        tokenRepository.save(TokenEntity.createAccessToken(userEntity.getSeq(),"qwew", "qweqwe",new Date()));
+        tokenRepository.save(TokenEntity.createAccessToken(userEntity,"qwew", "qweqwe",new Date()));
         userRoleRepository.save(UserRoleEntity.builder()
                         .userSeq(userEntity.getSeq())
                         .roleSeq(roleEntity.getSeq())

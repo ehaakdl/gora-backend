@@ -14,6 +14,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
@@ -66,39 +68,6 @@ public class SecurityConfig {
                     .userInfoEndpoint()
                         .userService(oauth2UserService());
 
-//        http
-//                .sessionManagement()
-//                    .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-//                .and()
-//                .cors().configurationSource(corsConfigurationSource())
-//                .and()
-//                .httpBasic().disable()
-//                .authorizeHttpRequests()
-//                .requestMatchers(getAntRequestMatchers())
-//                    .permitAll()
-//                .anyRequest()
-//                    .authenticated()
-//                .and()
-//                .oauth2Login()
-//                    .loginPage(loginPageUrl)
-//                    .successHandler(new AuthenticationSuccessHandlerImpl(loginSuccessHandler))
-//                    .defaultSuccessUrl("/b")
-//                    .failureHandler(new AuthenticationFailHandlerImpl())
-//                    .failureUrl("/a")
-//                    .authorizationEndpoint()
-//                        .baseUri("/oauth2/authorize")
-//                        .authorizationRequestRepository(cookieAuthorizationRequestRepository())
-//                todo application.yml 파일에서 셋팅해야 적용됨 여기서는 안됨
-//                    .and()
-//                    .redirectionEndpoint()
-//                        .baseUri("/oauth2/callback/**")
-//                .and()
-//                    .userInfoEndpoint()
-//                        .userService(oauth2UserService())
-        ;
-//        todo 추가시 인증안된 세션 login 페이지 리다이렉션 안함
-//                http.addFilterBefore(new JwtTokenAuthenticationFilter(jwtTokenProvider(), eIgnoreSecurityPath.getAntRequestMatchers(), tokenUtils), UsernamePasswordAuthenticationFilter.class);
-
         return http.build();
     }
 
@@ -106,10 +75,6 @@ public class SecurityConfig {
     public Oauth2UserService oauth2UserService() {
         return new Oauth2UserService();
     }
-
-//    private HttpCookieOAuth2AuthorizationRequestRepository cookieAuthorizationRequestRepository() {
-//        return new HttpCookieOAuth2AuthorizationRequestRepository();
-//    }
 
     @Bean
     public UserDetailsServiceImpl userDetailsService() {
@@ -133,4 +98,6 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
+
+
 }

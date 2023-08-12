@@ -1,5 +1,6 @@
 package com.gora.backend.common.token;
 
+import com.gora.backend.model.TokenInfo;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
 import jakarta.servlet.http.HttpServletRequest;
@@ -42,13 +43,19 @@ public class TokenUtils {
         }
     }
 
-    public String createToken(Map<String, Object> claimsMap, eToken type, Date expireAt) {
+    private String createToken(Map<String, Object> claimsMap, String subject, Date expireAt) {
         return Jwts.builder()
-                .setSubject(type.getSubject())
+                .setSubject(subject)
                 .addClaims(claimsMap)
                 .setIssuedAt(new Date())
                 .setExpiration(expireAt)
                 .signWith(getSecretKey(), SignatureAlgorithm.HS256)
                 .compact();
+    }
+
+    public TokenInfo createToken(Map<String, Object> claimsMap, eToken type){
+        Date nowAt = new Date();
+        Date expiredAt = new Date(nowAt.getTime() + type.getExpirePeriod());
+        return new TokenInfo(createToken(claimsMap, type.getSubject(), expiredAt), expiredAt);
     }
 }

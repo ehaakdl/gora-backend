@@ -15,7 +15,6 @@ public enum eIgnoreSecurityPath {
     , SWAGGER_DOCS(AntPathRequestMatcher.antMatcher("/docs"))
     , SWAGGER_DOCS_PREFIX(AntPathRequestMatcher.antMatcher("/docs/**"))
     , SWAGGER(AntPathRequestMatcher.antMatcher("/swagger-ui"))
-    , DB(AntPathRequestMatcher.antMatcher("/db"))
     ;
 
     private final AntPathRequestMatcher requestMatcher;

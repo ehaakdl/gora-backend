@@ -1,12 +1,13 @@
 package com.gora.backend.model.entity;
 
-import com.gora.backend.model.entity.DefaultColumn;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
-import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
+import org.hibernate.annotations.DynamicInsert;
+import org.hibernate.annotations.DynamicUpdate;
 
 import java.util.*;
 
@@ -16,6 +17,9 @@ import java.util.*;
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
+@DynamicInsert
+@DynamicUpdate
+@Setter
 public class UserEntity extends DefaultColumn {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
