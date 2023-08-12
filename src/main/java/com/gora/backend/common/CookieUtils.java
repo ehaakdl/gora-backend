@@ -8,18 +8,20 @@ import java.util.Base64;
 import java.util.Optional;
 
 public class CookieUtils {
-    public static Optional<Cookie> getCookie(HttpServletRequest request, String name) {
+    public static String  getCookie(HttpServletRequest request, String name) {
         Cookie[] cookies = request.getCookies();
 
-        if (cookies != null && cookies.length > 0) {
-            for (Cookie cookie : cookies) {
-                if (cookie.getName().equals(name)) {
-                    return Optional.of(cookie);
-                }
+        if (cookies == null) {
+            return null;
+        }
+
+        for (Cookie cookie : cookies) {
+            if (cookie.getName().equals(name)) {
+                return cookie.getValue();
             }
         }
 
-        return Optional.empty();
+        return null;
     }
 
     public static void addCookie(HttpServletResponse response, String name, String value, int maxAge) {

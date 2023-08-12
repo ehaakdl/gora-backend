@@ -2,7 +2,9 @@ package com.gora.backend.config;
 
 import com.gora.backend.common.EnvironmentKey;
 import com.gora.backend.common.FrontUrl;
+import com.gora.backend.filter.JwtTokenAuthenticationFilter;
 import com.gora.backend.handler.LoginSuccessHandler;
+import com.gora.backend.model.eIgnoreSecurityPath;
 import com.gora.backend.repository.TokenRepository;
 import com.gora.backend.repository.UserRepository;
 import com.gora.backend.repository.UserRoleCustomRepository;
@@ -14,9 +16,8 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
-import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
 import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
@@ -33,6 +34,7 @@ public class SecurityConfig {
     private final Environment environment;
     private final UserRepository userRepository;
     private final TokenUtils tokenUtils;
+    private final LogoutSuccessHandlerImpl logoutSuccessHandler;
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
@@ -45,28 +47,28 @@ public class SecurityConfig {
                 .cors().configurationSource(corsConfigurationSource())
                 .and()
                 .authorizeHttpRequests()
-                    .requestMatchers(getAntRequestMatchers()).permitAll()
+                .requestMatchers(getAntRequestMatchers()).permitAll()
                 .anyRequest()
-                    .authenticated()
+                .authenticated()
                 .and()
                 .logout()
+                .logoutUrl("/api/v1/logout")
 //                todo 리다이렉션 안됨 핸들러 들어오기는함
-//                .logoutSuccessHandler((request, response, authentication) -> {
-//                    response.sendRedirect("/");
-//                    request.cooki
-//                    System.out.printf("logout");
-//                })
+                .logoutSuccessHandler(logoutSuccessHandler)
                 .and()
                 .oauth2Login()
-                    .authorizationEndpoint()
+                .authorizationEndpoint()
 //                oauth2Login만 하면 필요없는데 추가설정 들어가니까 이 url 없으면 안됨
-                        .baseUri("/oauth2/authorize")
-                    .and()
-                    .loginPage(loginPageUrl)
-                    .successHandler(new AuthenticationSuccessHandlerImpl(loginSuccessHandler))
-                    .failureHandler(new AuthenticationFailHandlerImpl())
-                    .userInfoEndpoint()
-                        .userService(oauth2UserService());
+                .baseUri("/oauth2/authorize")
+                .and()
+                .loginPage(loginPageUrl)
+                .successHandler(new AuthenticationSuccessHandlerImpl(loginSuccessHandler))
+                .failureHandler(new AuthenticationFailHandlerImpl())
+                .userInfoEndpoint()
+                .userService(oauth2UserService());
+
+        //        todo 추가시 인증안된 세션 login 페이지 리다이렉션 안함
+//        http.addFilterBefore(new JwtTokenAuthenticationFilter(jwtTokenProvider(), eIgnoreSecurityPath.getAntRequestMatchers(), tokenUtils), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -83,7 +85,7 @@ public class SecurityConfig {
 
     @Bean
     public JwtTokenProvider jwtTokenProvider() {
-        return new JwtTokenProvider(userDetailsService(),tokenRepository, tokenUtils);
+        return new JwtTokenProvider(userDetailsService(), tokenRepository, tokenUtils);
     }
 
     @Bean
@@ -98,6 +100,4 @@ public class SecurityConfig {
         source.registerCorsConfiguration("/**", configuration);
         return source;
     }
-
-
 }
