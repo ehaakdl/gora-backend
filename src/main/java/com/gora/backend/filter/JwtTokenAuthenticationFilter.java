@@ -1,13 +1,7 @@
 package com.gora.backend.filter;
 
-import com.gora.backend.service.security.JwtTokenProvider;
-import com.gora.backend.common.token.TokenUtils;
-import jakarta.servlet.FilterChain;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
+import java.io.IOException;
+
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -15,7 +9,15 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
-import java.io.IOException;
+import com.gora.backend.common.token.TokenUtils;
+import com.gora.backend.service.security.JwtTokenProvider;
+
+import jakarta.servlet.FilterChain;
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @RequiredArgsConstructor
@@ -42,7 +44,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
             return;
         }
 
-        String accessToken = tokenUtils.parseLoginAccessToken(request);
+        String accessToken = tokenUtils.getAccessToken(request);
         if(StringUtils.isBlank(accessToken)){
                 response.sendError(HttpStatus.UNAUTHORIZED.value());
                 return;

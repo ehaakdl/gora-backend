@@ -1,8 +1,9 @@
 package com.gora.backend.model;
 
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
+
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 @Getter
 @RequiredArgsConstructor
@@ -10,7 +11,6 @@ public enum eIgnoreSecurityPath {
     ICON(AntPathRequestMatcher.antMatcher("/*.ico"))
     , ERROR(AntPathRequestMatcher.antMatcher("/error"))
     , OAUTH2(AntPathRequestMatcher.antMatcher("/oauth2/**"))
-    , DOWNLOAD_CLIENT(AntPathRequestMatcher.antMatcher("/api/v1/download/client"))
     , SWAGGER_PREFIX(AntPathRequestMatcher.antMatcher("/swagger-ui/**"))
     , SWAGGER_DOCS(AntPathRequestMatcher.antMatcher("/docs"))
     , SWAGGER_DOCS_PREFIX(AntPathRequestMatcher.antMatcher("/docs/**"))

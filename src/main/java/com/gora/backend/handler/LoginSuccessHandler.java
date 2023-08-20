@@ -1,16 +1,9 @@
 package com.gora.backend.handler;
 
-import com.gora.backend.common.ClaimsName;
-import com.gora.backend.common.EnvironmentKey;
-import com.gora.backend.model.TokenInfo;
-import com.gora.backend.model.entity.TokenEntity;
-import com.gora.backend.model.entity.UserEntity;
-import com.gora.backend.model.entity.eUserType;
-import com.gora.backend.repository.TokenRepository;
-import com.gora.backend.common.token.TokenUtils;
-import com.gora.backend.repository.UserRepository;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+import java.util.HashMap;
+import java.util.Objects;
+
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
@@ -20,13 +13,21 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
+import com.gora.backend.common.ClaimsName;
+import com.gora.backend.common.EnvironmentKey;
+import com.gora.backend.common.token.TokenUtils;
+import com.gora.backend.model.TokenInfo;
+import com.gora.backend.model.entity.TokenEntity;
+import com.gora.backend.model.entity.UserEntity;
+import com.gora.backend.model.entity.UserRoleEntity;
+import com.gora.backend.model.entity.eUserType;
+import com.gora.backend.repository.RoleRepository;
+import com.gora.backend.repository.TokenRepository;
+import com.gora.backend.repository.UserRepository;
+import com.gora.backend.repository.UserRoleRepository;
 
-import static com.gora.backend.common.token.eToken.ACCESS;
-import static com.gora.backend.common.token.eToken.REFRESH;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
@@ -36,6 +37,8 @@ public class LoginSuccessHandler {
     private final Environment environment;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final UserRoleRepository userRoleRepository;
+    private final RoleRepository roleRepository;
 
     private void setResponse(HttpServletResponse response, String accessToken) {
         String frontUrl = environment.getProperty(EnvironmentKey.APP_FRONT_URL);
@@ -107,6 +110,14 @@ public class LoginSuccessHandler {
         }else {
             user = getSocialUser(email,userType);
         }
+
+        // todo 아이디 생성시 기본권한도 부여하기
+        roleRepository.findByCode("R_PUBLIC").ifPresent(t -> {
+            userRoleRepository.save(
+            UserRoleEntity.builder().roleSeq()
+        );
+        });
+        
 
         TokenInfo accessTokenInfo = tokenUtils.createToken(claimsMap, ACCESS);
         TokenInfo refreshTokenInfo = tokenUtils.createToken(claimsMap, REFRESH);
