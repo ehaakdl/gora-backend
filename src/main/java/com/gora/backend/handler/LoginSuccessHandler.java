@@ -2,6 +2,7 @@ package com.gora.backend.handler;
 
 import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Objects;
 
 import org.springframework.core.env.Environment;
@@ -16,6 +17,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gora.backend.common.ClaimsName;
 import com.gora.backend.common.EnvironmentKey;
 import com.gora.backend.common.token.TokenUtils;
+import com.gora.backend.common.token.eToken;
 import com.gora.backend.model.TokenInfo;
 import com.gora.backend.model.entity.TokenEntity;
 import com.gora.backend.model.entity.UserEntity;
@@ -111,16 +113,17 @@ public class LoginSuccessHandler {
             user = getSocialUser(email,userType);
         }
 
-        // todo 아이디 생성시 기본권한도 부여하기
-        roleRepository.findByCode("R_PUBLIC").ifPresent(t -> {
+        roleRepository.findByCode("ROLE_PUBLIC").ifPresentOrElse(t -> {
             userRoleRepository.save(
-            UserRoleEntity.builder().roleSeq()
-        );
+                UserRoleEntity.builder().user(user).role(t).build()
+            );
+        }, () -> {
+            throw new RuntimeException("일반 유저 권한 지정 불가");
         });
         
 
-        TokenInfo accessTokenInfo = tokenUtils.createToken(claimsMap, ACCESS);
-        TokenInfo refreshTokenInfo = tokenUtils.createToken(claimsMap, REFRESH);
+        TokenInfo accessTokenInfo = tokenUtils.createToken(claimsMap, eToken.ACCESS);
+        TokenInfo refreshTokenInfo = tokenUtils.createToken(claimsMap, eToken.REFRESH);
         tokenRepository.save(
                 TokenEntity.createAccessToken(
                         user, accessTokenInfo.getToken(), refreshTokenInfo.getToken()

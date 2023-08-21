@@ -26,8 +26,8 @@ public class UserRoleCustomRepository {
         return jpaQueryFactory.select(privilegeEntity.displayName)
                 .from(userRoleEntity)
                 .innerJoin(roleEntity).on(
-                        userRoleEntity.roleSeq.eq(roleEntity.seq)
-                        , userRoleEntity.userSeq.eq(user.getSeq())
+                        userRoleEntity.role.eq(roleEntity)
+                        , userRoleEntity.user.eq(user)
                 )
                 .innerJoin(rolePrivilegeEntity).on(
                         roleEntity.seq.eq(rolePrivilegeEntity.roleSeq)
