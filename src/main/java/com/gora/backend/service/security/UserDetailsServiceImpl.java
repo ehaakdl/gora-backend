@@ -6,10 +6,7 @@ import com.gora.backend.repository.UserRoleCustomRepository;
 import lombok.RequiredArgsConstructor;
 import org.apache.commons.lang3.StringUtils;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.User;
-import org.springframework.security.core.userdetails.UserDetails;
-import org.springframework.security.core.userdetails.UserDetailsService;
-import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.security.core.userdetails.*;
 
 import java.util.List;
 
@@ -29,6 +26,6 @@ public class UserDetailsServiceImpl implements UserDetailsService {
         List<SimpleGrantedAuthority> grantedAuthorityList = userRoleCustomRepository.findUserPrivilege(user).stream()
                 .map(SimpleGrantedAuthority::new).toList();
 
-        return new User(user.getEmail(), user.getPassword(), grantedAuthorityList);
+        return new User(user.getEmail(), String.valueOf(user.getSeq()), grantedAuthorityList);      
     }
 }

@@ -5,6 +5,7 @@ import java.util.Date;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
 import com.gora.backend.model.TokenInfo;
@@ -27,7 +28,7 @@ public class TokenUtils {
     }
 
     public String getAccessToken(HttpServletRequest request) {
-        String authorization = request.getHeader("Authorization");
+        String authorization = request.getHeader(HttpHeaders.AUTHORIZATION);
         if (StringUtils.isNotBlank(authorization) && authorization.startsWith("Bearer ")) {
             return authorization;
         }

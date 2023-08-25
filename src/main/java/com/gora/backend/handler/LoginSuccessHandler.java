@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gora.backend.common.ClaimsName;
 import com.gora.backend.common.EnvironmentKey;
+import com.gora.backend.common.RoleCode;
 import com.gora.backend.common.token.TokenUtils;
 import com.gora.backend.common.token.eToken;
 import com.gora.backend.model.TokenInfo;
@@ -100,10 +101,12 @@ public class LoginSuccessHandler {
 
     @Transactional
     public void process(HttpServletResponse response, Authentication authentication) {
+        // 인증 요청에서 이메일 추출
         String email = extractEmail(authentication);
         Map<String, Object> claimsMap = new HashMap<>();
         claimsMap.put(ClaimsName.EMAIL, email);
 
+        // 계정 가져오기
         eUserType userType = getUserType(authentication);
         UserEntity user;
         if(userType == eUserType.basic){
@@ -112,16 +115,17 @@ public class LoginSuccessHandler {
         }else {
             user = getSocialUser(email,userType);
         }
-
-        roleRepository.findByCode("ROLE_PUBLIC").ifPresentOrElse(t -> {
-            userRoleRepository.save(
-                UserRoleEntity.builder().user(user).role(t).build()
-            );
-        }, () -> {
+        
+        roleRepository.findByCode(RoleCode.ROLE_PUBLIC).ifPresentOrElse((role)->{
+            // 계정에 권한 없으면 부여
+            if (!userRoleRepository.existsByUserAndRole(user, role)) {
+                userRoleRepository.save(UserRoleEntity.builder().user(user).role(role).build());
+            }
+        }
+        , ()->{
             throw new RuntimeException("일반 유저 권한 지정 불가");
         });
-        
-
+    
         TokenInfo accessTokenInfo = tokenUtils.createToken(claimsMap, eToken.ACCESS);
         TokenInfo refreshTokenInfo = tokenUtils.createToken(claimsMap, eToken.REFRESH);
         tokenRepository.save(

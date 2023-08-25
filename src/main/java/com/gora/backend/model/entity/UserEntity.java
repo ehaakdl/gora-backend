@@ -13,12 +13,12 @@ import java.util.*;
 
 @Entity
 @Table(name = "user")
-@Getter
 @SuperBuilder
 @NoArgsConstructor
 @AllArgsConstructor
 @DynamicInsert
 @DynamicUpdate
+@Getter
 @Setter
 public class UserEntity extends DefaultColumn {
     @Id

@@ -19,7 +19,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RequiredArgsConstructor
 public class JwtTokenProvider {
-    private final UserDetailsServiceImpl userDetailsService;
+    private final UserDetailsServiceImpl UserDetailsServiceImpl;
     private final TokenRepository tokenRepository;
     private final TokenUtils tokenUtils;
 
@@ -32,8 +32,8 @@ public class JwtTokenProvider {
         String email = Optional.ofNullable(tokenUtils.getValue(token.replace("Bearer ", ""), EMAIL))
                 .orElseThrow(BadRequestException::new);
 
-        UserDetails userDetails = userDetailsService.loadUserByUsername(email);
+        UserDetails userDetails = UserDetailsServiceImpl.loadUserByUsername(email);
 
-        return new UsernamePasswordAuthenticationToken(userDetails, userDetails.getPassword(), userDetails.getAuthorities());
+        return new UsernamePasswordAuthenticationToken(userDetails.getUsername(), token, userDetails.getAuthorities());
     }
 }

@@ -80,12 +80,12 @@ public class SecurityConfig {
     }
 
     @Bean
-    public UserDetailsServiceImpl userDetailsService() {
+    public UserDetailsServiceImpl UserDetailsServiceImpl() {
         return new UserDetailsServiceImpl(userRepository, userRoleCustomRepository);
     }
 
     @Bean
     public JwtTokenProvider jwtTokenProvider() {
-        return new JwtTokenProvider(userDetailsService(), tokenRepository, tokenUtils);
+        return new JwtTokenProvider(UserDetailsServiceImpl(), tokenRepository, tokenUtils);
     }
 }

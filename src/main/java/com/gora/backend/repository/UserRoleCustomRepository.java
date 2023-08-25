@@ -23,7 +23,7 @@ public class UserRoleCustomRepository {
 //    inner join privilege on role_privilege.privilege_seq = privilege.seq
 //    ;
     public List<String> findUserPrivilege(UserEntity user) {
-        return jpaQueryFactory.select(privilegeEntity.displayName)
+        return jpaQueryFactory.select(privilegeEntity.code)
                 .from(userRoleEntity)
                 .innerJoin(roleEntity).on(
                         userRoleEntity.role.eq(roleEntity)
