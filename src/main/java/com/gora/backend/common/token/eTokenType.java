@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 @Getter
-public enum eToken {
+public enum eTokenType {
     ACCESS(
             1000L * 60 * 60
             , "access"

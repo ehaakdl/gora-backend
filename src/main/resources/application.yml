@@ -49,3 +49,4 @@ springdoc:
 
 app:
   version: 1.0.0
+  secret-key: ${JWT_SECRET_KEY}

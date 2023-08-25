@@ -8,6 +8,7 @@ import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import org.hibernate.annotations.DynamicInsert;
 import org.hibernate.annotations.DynamicUpdate;
+import org.hibernate.usertype.UserType;
 
 import java.util.*;
 
@@ -36,5 +37,21 @@ public class UserEntity extends DefaultColumn {
 
     public boolean isDisable() {
         return Objects.requireNonNullElse(this.disable, false);
+    }
+    
+    public static UserEntity createSocialUser(eUserType type, String email){
+        return UserEntity.builder()
+                                .type(type)
+                                .email(email)
+                                .build();
+    }
+    
+    public static UserEntity createBasicUser(eUserType type, String password, String email){
+        return UserEntity.builder()
+                                .type(type)
+                                .password(password)
+                                .email(email)
+                                .build();
+
     }
 }

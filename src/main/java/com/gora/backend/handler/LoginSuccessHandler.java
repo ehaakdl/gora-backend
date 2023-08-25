@@ -18,7 +18,7 @@ import com.gora.backend.common.ClaimsName;
 import com.gora.backend.common.EnvironmentKey;
 import com.gora.backend.common.RoleCode;
 import com.gora.backend.common.token.TokenUtils;
-import com.gora.backend.common.token.eToken;
+import com.gora.backend.common.token.eTokenType;
 import com.gora.backend.model.TokenInfo;
 import com.gora.backend.model.entity.TokenEntity;
 import com.gora.backend.model.entity.UserEntity;
@@ -56,11 +56,7 @@ public class LoginSuccessHandler {
     private UserEntity getBasicUser(String email,String password, eUserType userType) {
         UserEntity user = userRepository.findByEmailAndDisable(email, false).orElse(null);
         return Objects.requireNonNullElseGet(user, () ->  userRepository.save(
-                        UserEntity.builder()
-                                .type(userType)
-                                .password(password)
-                                .email(email)
-                                .build()
+                        UserEntity.createBasicUser(userType, password, email)
                 )
         );
     }
@@ -69,10 +65,7 @@ public class LoginSuccessHandler {
         UserEntity user = userRepository.findByEmailAndDisable(email, false).orElse(null);
         return Objects.requireNonNullElseGet(user, () ->
                  userRepository.save(
-                        UserEntity.builder()
-                                .type(userType)
-                                .email(email)
-                                .build()
+                        UserEntity.createSocialUser(userType, email)
                  )
         );
     }
@@ -119,15 +112,15 @@ public class LoginSuccessHandler {
         roleRepository.findByCode(RoleCode.ROLE_PUBLIC).ifPresentOrElse((role)->{
             // 계정에 권한 없으면 부여
             if (!userRoleRepository.existsByUserAndRole(user, role)) {
-                userRoleRepository.save(UserRoleEntity.builder().user(user).role(role).build());
+                userRoleRepository.save(UserRoleEntity.create(user, role));
             }
         }
         , ()->{
             throw new RuntimeException("일반 유저 권한 지정 불가");
         });
     
-        TokenInfo accessTokenInfo = tokenUtils.createToken(claimsMap, eToken.ACCESS);
-        TokenInfo refreshTokenInfo = tokenUtils.createToken(claimsMap, eToken.REFRESH);
+        TokenInfo accessTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.ACCESS);
+        TokenInfo refreshTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.REFRESH);
         tokenRepository.save(
                 TokenEntity.createAccessToken(
                         user, accessTokenInfo.getToken(), refreshTokenInfo.getToken()

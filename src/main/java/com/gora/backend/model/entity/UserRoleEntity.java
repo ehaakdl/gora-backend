@@ -32,4 +32,8 @@ public class UserRoleEntity {
     @ManyToOne
     @JoinColumn(name = "role_seq")
     private RoleEntity role;
+
+    public static UserRoleEntity create(UserEntity user, RoleEntity role){
+        return UserRoleEntity.builder().user(user).role(role).build();
+    }
 }

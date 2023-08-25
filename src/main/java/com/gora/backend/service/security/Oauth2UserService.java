@@ -10,11 +10,6 @@ public class Oauth2UserService extends DefaultOAuth2UserService {
 
     @Override
     public OAuth2User loadUser(OAuth2UserRequest userRequest) throws OAuth2AuthenticationException {
-        boolean dd = false;
-        System.out.printf("loaduser");
-        if (dd) {
-            throw new RuntimeException();
-        }
         return super.loadUser(userRequest);
     }
 }
