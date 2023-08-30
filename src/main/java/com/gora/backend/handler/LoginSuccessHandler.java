@@ -14,7 +14,7 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gora.backend.common.ClaimsName;
+import com.gora.backend.common.TokenClaimsName;
 import com.gora.backend.common.EnvironmentKey;
 import com.gora.backend.common.RoleCode;
 import com.gora.backend.common.token.TokenUtils;
@@ -97,7 +97,7 @@ public class LoginSuccessHandler {
         // 인증 요청에서 이메일 추출
         String email = extractEmail(authentication);
         Map<String, Object> claimsMap = new HashMap<>();
-        claimsMap.put(ClaimsName.EMAIL, email);
+        claimsMap.put(TokenClaimsName.EMAIL, email);
 
         // 계정 가져오기
         eUserType userType = getUserType(authentication);

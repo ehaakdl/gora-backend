@@ -1,6 +1,6 @@
 package com.gora.backend.service.security;
 
-import static com.gora.backend.common.ClaimsName.*;
+import static com.gora.backend.common.TokenClaimsName.*;
 
 import java.util.Optional;
 

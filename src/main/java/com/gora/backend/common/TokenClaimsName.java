@@ -1,5 +1,5 @@
 package com.gora.backend.common;
 
-public class ClaimsName {
+public class TokenClaimsName {
     public static final String EMAIL = "email";
 }

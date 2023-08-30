@@ -14,6 +14,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 
+import javax.management.RuntimeErrorException;
+
 @RestController
 @RequestMapping("/api/v1/download")
 public class DownloadController {
@@ -29,7 +31,8 @@ public class DownloadController {
 
         // Create the InputStreamResource from the file
         InputStreamResource inputStreamResource = new InputStreamResource(new FileInputStream(file));
-
+        System.out.println("test");
+        throw new RuntimeErrorException("null")
         // Return the ResponseEntity
         return ResponseEntity.ok()
                 .headers(headers)

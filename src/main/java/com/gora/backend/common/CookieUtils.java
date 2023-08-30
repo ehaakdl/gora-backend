@@ -5,7 +5,6 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.util.SerializationUtils;
 
 import java.util.Base64;
-import java.util.Optional;
 
 public class CookieUtils {
     public static String  getCookie(HttpServletRequest request, String name) {
