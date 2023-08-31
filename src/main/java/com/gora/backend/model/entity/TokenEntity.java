@@ -2,7 +2,6 @@ package com.gora.backend.model.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
-import org.apache.catalina.User;
 import org.apache.commons.lang3.StringUtils;
 
 import java.util.Date;

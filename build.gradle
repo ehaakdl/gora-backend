@@ -75,7 +75,7 @@ tasks.named('test') {
 }
 
 // querydsl 사용할 경로 지정합니다.
-def querydslDir = "$buildDir/generated/'querydsl'"
+def querydslDir = "$buildDir/generated/querydsl"
 
 // build시 사용할 sourceSet 추가 설정
 sourceSets {
