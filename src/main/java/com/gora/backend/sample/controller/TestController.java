@@ -139,8 +139,8 @@ public class TestController {
                 .build());
         tokenRepository.save(TokenEntity.createAccessToken(userEntity,"qwew", "qweqwe",new Date()));
         userRoleRepository.save(UserRoleEntity.builder()
-                        .userSeq(userEntity.getSeq())
-                        .roleSeq(roleEntity.getSeq())
+                        .user(userEntity)
+                        .role(roleEntity)
                 .build());
 
     }
