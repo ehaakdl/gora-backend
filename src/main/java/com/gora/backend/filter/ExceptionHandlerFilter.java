@@ -11,8 +11,6 @@ import com.gora.backend.common.ResponseCode;
 import com.gora.backend.exception.BadRequestException;
 import com.gora.backend.model.response.ErrorResponse;
 
-import io.jsonwebtoken.ExpiredJwtException;
-import io.jsonwebtoken.JwtException;
 import jakarta.servlet.FilterChain;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;

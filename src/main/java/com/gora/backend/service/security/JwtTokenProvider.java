@@ -27,12 +27,12 @@ public class JwtTokenProvider {
     public Authentication getAuthentication(String token) {
         TokenEntity tokenEntity = tokenRepository.findByAccess(token).orElse(null);
         if(tokenEntity == null){
-            return null;
+            new BadRequestException(ResponseCode.BAD_REQUEST, "error.badRequest");
         }
 
         String email = Optional.ofNullable(tokenUtils.getValue(token.replace("Bearer ", ""), EMAIL))
                 .orElseThrow(() -> {
-                    return new BadRequestException(ResponseCode.BAD_REQUEST, "error.serverInternal");
+                    return new BadRequestException(ResponseCode.BAD_REQUEST, "error.badRequest");
                 });
 
         UserDetails userDetails = UserDetailsServiceImpl.loadUserByUsername(email);
