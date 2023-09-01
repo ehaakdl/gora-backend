@@ -1,17 +1,25 @@
 package com.gora.backend.model.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
+import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
+
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.NotEmpty;
+import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Past;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 import lombok.Data;
-import lombok.Getter;
-import lombok.Setter;
 
 @Data
-@Getter
-@Setter
-    public class LoginRequest{
-        @JsonProperty("email")
-        private String email;
-        @JsonProperty("password")
-        private String password;
-    }
+public class LoginRequest {
+  @Email
+  @NotBlank
+  private String email;
+  @NotBlank
+  private String password;
+
+}

@@ -53,21 +53,16 @@ public class LoginSuccessHandler {
         }
     }
 
-    private UserEntity getBasicUser(String email,String password, eUserType userType) {
+    private UserEntity getBasicUser(String email, String password, eUserType userType) {
         UserEntity user = userRepository.findByEmailAndDisable(email, false).orElse(null);
-        return Objects.requireNonNullElseGet(user, () ->  userRepository.save(
-                        UserEntity.createBasicUser(userType, password, email)
-                )
-        );
+        return Objects.requireNonNullElseGet(user, () -> userRepository.save(
+                UserEntity.createBasicUser(userType, password, email)));
     }
 
     private UserEntity getSocialUser(String email, eUserType userType) {
         UserEntity user = userRepository.findByEmailAndDisable(email, false).orElse(null);
-        return Objects.requireNonNullElseGet(user, () ->
-                 userRepository.save(
-                        UserEntity.createSocialUser(userType, email)
-                 )
-        );
+        return Objects.requireNonNullElseGet(user, () -> userRepository.save(
+                UserEntity.createSocialUser(userType, email)));
     }
 
     private eUserType getUserType(Authentication authentication) {
@@ -87,8 +82,8 @@ public class LoginSuccessHandler {
         }
     }
 
-    private String getPassword(Authentication authentication){
-//        todo basic 계정 임시 비번
+    private String getPassword(Authentication authentication) {
+        // todo basic 계정 임시 비번
         return passwordEncoder.encode("1234");
     }
 
@@ -102,31 +97,27 @@ public class LoginSuccessHandler {
         // 계정 가져오기
         eUserType userType = getUserType(authentication);
         UserEntity user;
-        if(userType == eUserType.basic){
+        if (userType == eUserType.basic) {
             String password = getPassword(authentication);
             user = getBasicUser(email, password, userType);
-        }else {
-            user = getSocialUser(email,userType);
+        } else {
+            user = getSocialUser(email, userType);
         }
-        
-        roleRepository.findByCode(RoleCode.ROLE_PUBLIC).ifPresentOrElse((role)->{
+
+        roleRepository.findByCode(RoleCode.ROLE_PUBLIC).ifPresentOrElse((role) -> {
             // 계정에 권한 없으면 부여
             if (!userRoleRepository.existsByUserAndRole(user, role)) {
                 userRoleRepository.save(UserRoleEntity.create(user, role));
             }
-        }
-        , ()->{
+        }, () -> {
             throw new RuntimeException("일반 유저 권한 지정 불가");
         });
-    
+
         TokenInfo accessTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.ACCESS);
         TokenInfo refreshTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.REFRESH);
         tokenRepository.save(
                 TokenEntity.createAccessToken(
-                        user, accessTokenInfo.getToken(), refreshTokenInfo.getToken()
-                        , accessTokenInfo.getExpiredAt()
-                )
-        );
+                        user, accessTokenInfo.getToken(), refreshTokenInfo.getToken(), accessTokenInfo.getExpiredAt()));
 
         setResponse(response, accessTokenInfo.getToken());
     }

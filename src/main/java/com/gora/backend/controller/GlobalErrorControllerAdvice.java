@@ -2,6 +2,7 @@ package com.gora.backend.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -20,21 +21,38 @@ import lombok.extern.slf4j.Slf4j;
 @RequiredArgsConstructor
 public class GlobalErrorControllerAdvice {
     private final ResponseFactory responseFactory;
+
     @ExceptionHandler(Exception.class)
     @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
     @ResponseBody
-    private ErrorResponse handleException(Exception ex) {
+    private ErrorResponse serverInternal(Exception ex) {
         log.error("서버에서 처하 못한에러 발생:", ex);
-        
+
         ErrorResponse responseModel;
-        try{
+        try {
             responseModel = responseFactory.createErrorResponse(ResponseCode.I_DONT_KWON, "error.server");
-        }catch(Exception exception){
+        } catch (Exception exception) {
             log.error("에러 응답 모델 생성 실패했습니다.");
             return responseFactory.createEmptyErrorResponse();
         }
-        
+
         return responseModel;
-    } 
-    
+    }
+
+    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ResponseStatus(HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    private ErrorResponse badRequest(Exception ex) {
+        log.error("잘못된 요청 발생:", ex);
+
+        ErrorResponse responseModel;
+        try {
+            responseModel = responseFactory.createErrorResponse(ResponseCode.BAD_REQUEST, "error.badRequest");
+        } catch (Exception exception) {
+            log.error("에러 응답 모델 생성 실패했습니다.");
+            return responseFactory.createEmptyErrorResponse();
+        }
+
+        return responseModel;
+    }
 }

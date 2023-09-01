@@ -16,13 +16,13 @@ import org.springframework.context.MessageSource;
 public class ResponseFactory {
     private final MessageSource messageSource;
 
-    public ErrorResponse createEmptyErrorResponse(){
+    public ErrorResponse createEmptyErrorResponse() {
         return ErrorResponse.builder().errorCode(ResponseCode.I_DONT_KWON.getCode()).message("").build();
     }
 
-    public ErrorResponse createErrorResponse(@NotNull ResponseCode responseCode, @NotNull String messageCode){
+    public ErrorResponse createErrorResponse(@NotNull ResponseCode responseCode, @NotNull String messageCode) {
         String message = messageSource.getMessage(messageCode, null, null, null);
-        if(message == null){
+        if (message == null) {
             return null;
         }
 

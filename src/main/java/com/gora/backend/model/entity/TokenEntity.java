@@ -26,8 +26,8 @@ public class TokenEntity {
     @Column
     private String access;
 
-    public static TokenEntity createAccessToken(UserEntity user,String access, String refresh, Date accessExpireAt){
-        if(StringUtils.isAnyBlank(access, refresh) || accessExpireAt == null){
+    public static TokenEntity createAccessToken(UserEntity user, String access, String refresh, Date accessExpireAt) {
+        if (StringUtils.isAnyBlank(access, refresh) || accessExpireAt == null) {
             throw new IllegalArgumentException();
         }
 
