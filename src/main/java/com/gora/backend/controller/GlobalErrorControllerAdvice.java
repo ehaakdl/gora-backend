@@ -11,11 +11,12 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import com.gora.backend.common.ResponseCode;
 import com.gora.backend.common.response.ResponseFactory;
+import com.gora.backend.exception.BadRequestException;
 import com.gora.backend.model.response.ErrorResponse;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
-
+// todo 에러 발생시 email noti
 @RestControllerAdvice
 @Slf4j
 @RequiredArgsConstructor
@@ -39,7 +40,7 @@ public class GlobalErrorControllerAdvice {
         return responseModel;
     }
 
-    @ExceptionHandler(MethodArgumentNotValidException.class)
+    @ExceptionHandler({MethodArgumentNotValidException.class, BadRequestException.class})
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     private ErrorResponse badRequest(Exception ex) {

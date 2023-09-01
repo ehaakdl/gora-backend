@@ -11,6 +11,7 @@ import org.springframework.stereotype.Component;
 
 import com.gora.backend.model.TokenInfo;
 
+import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.UnsupportedJwtException;
@@ -43,7 +44,7 @@ public class TokenUtils {
                     .setSigningKey(getSecretKey())
                     .parseClaimsJws(token)
                     .getBody().get(claimName, String.class);
-        }catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException e){
+        }catch (UnsupportedJwtException | MalformedJwtException | IllegalArgumentException | ExpiredJwtException e){
             return null;
         }
     }

@@ -5,6 +5,7 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 
+// todo db에서 관리
 @Getter
 @RequiredArgsConstructor
 public enum eIgnoreSecurityPath {
