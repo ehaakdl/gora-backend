@@ -51,7 +51,7 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
 
     @Bean
-    public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
+    SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         final String loginPageUrl = environment.getProperty(EnvironmentKey.APP_FRONT_URL) + FrontUrl.LOGIN;
         http
                 // .formLogin()
@@ -96,27 +96,27 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationFailureHandler authenticationFailHandler() {
+    AuthenticationFailureHandler authenticationFailHandler() {
         return new AuthenticationFailHandlerImpl();
     }
 
     @Bean
-    public AuthenticationSuccessHandler authenticationSuccessHandler() {
+    AuthenticationSuccessHandler authenticationSuccessHandler() {
         return new AuthenticationSuccessHandlerImpl(loginSuccessHandler);
     }
 
     @Bean
-    public Oauth2UserService oauth2UserService() {
+    Oauth2UserService oauth2UserService() {
         return new Oauth2UserService();
     }
 
     @Bean
-    public UserDetailsServiceImpl UserDetailsServiceImpl() {
+    UserDetailsServiceImpl UserDetailsServiceImpl() {
         return new UserDetailsServiceImpl(userRepository, userRoleCustomRepository);
     }
 
     @Bean
-    public JwtTokenProvider jwtTokenProvider() {
+    JwtTokenProvider jwtTokenProvider() {
         return new JwtTokenProvider(UserDetailsServiceImpl(), tokenRepository, tokenUtils);
     }
 }
