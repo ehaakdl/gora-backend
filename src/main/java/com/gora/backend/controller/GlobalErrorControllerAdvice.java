@@ -31,7 +31,7 @@ public class GlobalErrorControllerAdvice {
 
         ErrorResponse responseModel;
         try {
-            responseModel = responseFactory.createErrorResponse(ResponseCode.I_DONT_KWON, "error.server");
+            responseModel = responseFactory.createErrorResponse(ResponseCode.I_DONT_KWON, "error.serverInternal");
         } catch (Exception exception) {
             log.error("에러 응답 모델 생성 실패했습니다.");
             return responseFactory.createEmptyErrorResponse();

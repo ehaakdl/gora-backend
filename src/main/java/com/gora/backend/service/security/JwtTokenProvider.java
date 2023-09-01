@@ -8,6 +8,7 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.gora.backend.common.ResponseCode;
 import com.gora.backend.common.token.TokenUtils;
 import com.gora.backend.exception.BadRequestException;
 import com.gora.backend.model.entity.TokenEntity;
@@ -30,7 +31,9 @@ public class JwtTokenProvider {
         }
 
         String email = Optional.ofNullable(tokenUtils.getValue(token.replace("Bearer ", ""), EMAIL))
-                .orElseThrow(BadRequestException::new);
+                .orElseThrow(() -> {
+                    return new BadRequestException(ResponseCode.BAD_REQUEST, "error.serverInternal");
+                });
 
         UserDetails userDetails = UserDetailsServiceImpl.loadUserByUsername(email);
 
