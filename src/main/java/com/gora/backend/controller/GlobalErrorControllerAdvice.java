@@ -1,9 +1,8 @@
 package com.gora.backend.controller;
 
+import org.springframework.context.MessageSource;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.MethodArgumentNotValidException;
-import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -46,12 +45,20 @@ public class GlobalErrorControllerAdvice {
     private ErrorResponse badRequest(Exception ex) {
         log.error("잘못된 요청 발생:", ex);
 
+        ResponseCode responseCode = ResponseCode.BAD_REQUEST;
+        String messageCode = "error.badRequest";
+        if(ex instanceof BadRequestException){
+            BadRequestException badRequestException = (BadRequestException)ex;
+            responseCode = badRequestException.getErrorCode();
+            if(badRequestException.getMessageCode() != null){
+                messageCode =badRequestException.getMessageCode();           
+            }
+        }
+
         ErrorResponse responseModel;
-        try {
-            responseModel = responseFactory.createErrorResponse(ResponseCode.BAD_REQUEST, "error.badRequest");
-        } catch (Exception exception) {
-            log.error("에러 응답 모델 생성 실패했습니다.");
-            return responseFactory.createEmptyErrorResponse();
+        responseModel = responseFactory.createErrorResponse(responseCode, messageCode);
+        if(responseModel == null){
+            responseModel = responseFactory.createEmptyErrorResponse();
         }
 
         return responseModel;

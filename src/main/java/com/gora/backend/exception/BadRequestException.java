@@ -1,12 +1,17 @@
 package com.gora.backend.exception;
 
 import com.gora.backend.common.ResponseCode;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
-import lombok.RequiredArgsConstructor;
 
 @Getter
-@RequiredArgsConstructor
+@AllArgsConstructor
 public class BadRequestException extends RuntimeException{
-    private final ResponseCode code;
-    private final String message;
+    private final ResponseCode errorCode;
+    private String messageCode;
+
+    public BadRequestException(ResponseCode errorCode){
+        this.errorCode = errorCode;
+    }
 }

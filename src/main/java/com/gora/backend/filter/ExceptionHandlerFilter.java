@@ -34,7 +34,7 @@ public class ExceptionHandlerFilter extends OncePerRequestFilter {
             filterChain.doFilter(request, response);
         } catch(BadRequestException e){
             log.error("잘못된 요청 발생: ", e);
-            setErrorResponse(response, e.getCode(), e.getMessage());
+            setErrorResponse(response, e.getErrorCode(), e.getMessageCode());
         } catch(Exception e){
             log.error("알 수 없는 에러 발생: ", e);
             setErrorResponse(response, ResponseCode.I_DONT_KWON, "error.serverInternal");

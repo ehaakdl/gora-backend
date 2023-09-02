@@ -98,13 +98,6 @@ public class TestController {
     private final TokenRepository tokenRepository;
     private final UserRoleRepository userRoleRepository;
 
-    @GetMapping("/testdb")
-    @ResponseBody
-    @org.springframework.transaction.annotation.Transactional
-    public String wqe(){
-        userRepository.findByEmailAndDisable("ehaakdl@gmail.com",false).get().setDisable(true);
-        return "wqewqe";
-    }
     @GetMapping("/db")
     @ResponseBody
     @org.springframework.transaction.annotation.Transactional

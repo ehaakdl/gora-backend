@@ -23,10 +23,9 @@ public class UserController {
     private final PasswordEncoder encoder;
     @PostMapping("/login")
     public CommonResponse login(@Valid @RequestBody LoginRequest loginRequest) {
-        System.out.println(encoder.encode("1234"));
         String accessToken = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
         if(accessToken == null){
-            throw new BadRequestException(ResponseCode.BAD_REQUEST, null);
+            throw new BadRequestException(ResponseCode.BAD_REQUEST);
         }
 
         return CommonResponse.builder().data(accessToken).build();
