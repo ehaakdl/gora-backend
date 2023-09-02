@@ -18,6 +18,7 @@ public enum eIgnoreSecurityPath {
     , SWAGGER(AntPathRequestMatcher.antMatcher("/swagger-ui"))
     , LOGOUT(AntPathRequestMatcher.antMatcher("/api/v1/logout"))
     , LOGIN(AntPathRequestMatcher.antMatcher("/api/v1/login"))
+    , SIGNUP(AntPathRequestMatcher.antMatcher("/api/v1/signup"))
     ;
 
     private final AntPathRequestMatcher requestMatcher;

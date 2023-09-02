@@ -7,9 +7,11 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gora.backend.common.ResponseCode;
 import com.gora.backend.common.TokenClaimsName;
 import com.gora.backend.common.token.TokenUtils;
 import com.gora.backend.common.token.eTokenType;
+import com.gora.backend.exception.BadRequestException;
 import com.gora.backend.model.TokenInfo;
 import com.gora.backend.model.entity.TokenEntity;
 import com.gora.backend.model.entity.UserEntity;
@@ -31,7 +33,7 @@ public class UserService {
     public String login(String email, String password){
         UserEntity user = userRepository.findByEmailAndType(email,eUserType.basic).orElse(null);
         if(user == null){
-            return null;
+            throw new BadRequestException(ResponseCode.BAD_REQUEST);
         }
         
         if(!passwordEncoder.matches(password, user.getPassword())){
@@ -48,6 +50,15 @@ public class UserService {
                         user, accessTokenInfo.getToken(), refreshTokenInfo.getToken(), accessTokenInfo.getExpiredAt()));
 
         return accessTokenInfo.getToken();
+    }
+
+    @Transactional
+    public void signup(String email, String password){
+        if(userRepository.existsByEmail(email)){
+            throw new BadRequestException(ResponseCode.EXISTS_EMAIL);
+        }
+
+        userRepository.save(UserEntity.createBasicUser(passwordEncoder.encode(password), email));
     }
     
 }

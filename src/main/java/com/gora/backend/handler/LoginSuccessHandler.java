@@ -14,9 +14,9 @@ import org.springframework.security.oauth2.core.user.DefaultOAuth2User;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.gora.backend.common.TokenClaimsName;
 import com.gora.backend.common.EnvironmentKey;
 import com.gora.backend.common.RoleCode;
+import com.gora.backend.common.TokenClaimsName;
 import com.gora.backend.common.token.TokenUtils;
 import com.gora.backend.common.token.eTokenType;
 import com.gora.backend.model.TokenInfo;
@@ -56,13 +56,13 @@ public class LoginSuccessHandler {
     private UserEntity getBasicUser(String email, String password) {
         UserEntity user = userRepository.findByEmailAndType(email, eUserType.basic).orElse(null);
         return Objects.requireNonNullElseGet(user, () -> userRepository.save(
-                UserEntity.createBasicUser(eUserType.basic, password, email)));
+                UserEntity.createBasicUser(password, email)));
     }
 
     private UserEntity getSocialUser(String email) {
         UserEntity user = userRepository.findByEmailAndType(email, eUserType.social).orElse(null);
         return Objects.requireNonNullElseGet(user, () -> userRepository.save(
-                UserEntity.createSocialUser(eUserType.social, email)));
+                UserEntity.createSocialUser(email)));
     }
 
     private eUserType getUserType(Authentication authentication) {
