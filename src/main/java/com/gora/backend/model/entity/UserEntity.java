@@ -30,14 +30,8 @@ public class UserEntity extends DefaultColumn {
     @Column
     private String password;
     @Column
-    private Boolean disable;
-    @Column
     @Enumerated(EnumType.STRING)
     private eUserType type;
-
-    public boolean isDisable() {
-        return Objects.requireNonNullElse(this.disable, false);
-    }
     
     public static UserEntity createSocialUser(eUserType type, String email){
         return UserEntity.builder()

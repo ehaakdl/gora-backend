@@ -21,7 +21,7 @@ public class UserDetailsServiceImpl implements UserDetailsService {
             throw new UsernameNotFoundException(email);
         }
 
-        UserEntity user = userRepository.findByEmailAndDisable(email,false).orElseThrow(() -> new UsernameNotFoundException(email));
+        UserEntity user = userRepository.findByEmail(email).orElseThrow(() -> new UsernameNotFoundException(email));
 
         List<SimpleGrantedAuthority> grantedAuthorityList = userRoleCustomRepository.findUserPrivilege(user).stream()
                 .map(SimpleGrantedAuthority::new).toList();

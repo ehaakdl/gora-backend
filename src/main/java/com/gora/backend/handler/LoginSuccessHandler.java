@@ -53,16 +53,16 @@ public class LoginSuccessHandler {
         }
     }
 
-    private UserEntity getBasicUser(String email, String password, eUserType userType) {
-        UserEntity user = userRepository.findByEmailAndDisable(email, false).orElse(null);
+    private UserEntity getBasicUser(String email, String password) {
+        UserEntity user = userRepository.findByEmailAndType(email, eUserType.basic).orElse(null);
         return Objects.requireNonNullElseGet(user, () -> userRepository.save(
-                UserEntity.createBasicUser(userType, password, email)));
+                UserEntity.createBasicUser(eUserType.basic, password, email)));
     }
 
-    private UserEntity getSocialUser(String email, eUserType userType) {
-        UserEntity user = userRepository.findByEmailAndDisable(email, false).orElse(null);
+    private UserEntity getSocialUser(String email) {
+        UserEntity user = userRepository.findByEmailAndType(email, eUserType.social).orElse(null);
         return Objects.requireNonNullElseGet(user, () -> userRepository.save(
-                UserEntity.createSocialUser(userType, email)));
+                UserEntity.createSocialUser(eUserType.social, email)));
     }
 
     private eUserType getUserType(Authentication authentication) {
@@ -99,9 +99,9 @@ public class LoginSuccessHandler {
         UserEntity user;
         if (userType == eUserType.basic) {
             String password = getPassword(authentication);
-            user = getBasicUser(email, password, userType);
+            user = getBasicUser(email, password);
         } else {
-            user = getSocialUser(email, userType);
+            user = getSocialUser(email);
         }
 
         roleRepository.findByCode(RoleCode.ROLE_PUBLIC).ifPresentOrElse((role) -> {
