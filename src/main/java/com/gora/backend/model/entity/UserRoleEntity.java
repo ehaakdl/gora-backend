@@ -1,7 +1,5 @@
 package com.gora.backend.model.entity;
 
-import java.util.ArrayList;
-
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;

@@ -1,13 +1,7 @@
 package com.gora.backend.service.security;
 
-import com.gora.backend.common.CookieUtils;
-import com.gora.backend.common.EnvironmentKey;
-import com.gora.backend.common.HeaderName;
-import com.gora.backend.repository.TokenRepository;
-import jakarta.servlet.ServletException;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
-import lombok.RequiredArgsConstructor;
+import java.io.IOException;
+
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.security.core.Authentication;
@@ -15,7 +9,13 @@ import org.springframework.security.web.authentication.logout.LogoutSuccessHandl
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.io.IOException;
+import com.gora.backend.common.EnvironmentKey;
+import com.gora.backend.repository.TokenRepository;
+
+import jakarta.servlet.ServletException;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
+import lombok.RequiredArgsConstructor;
 
 @Component
 @RequiredArgsConstructor
