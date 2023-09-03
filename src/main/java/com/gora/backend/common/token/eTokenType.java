@@ -12,6 +12,10 @@ public enum eTokenType {
     )
     , REFRESH(1000L * 60 * 60
             , "refresh"
+    )
+    , EMAIL_VERIFY(
+        1000L * 60 * 3
+        , "email_verify"
     );
 
     private final long expirePeriod;

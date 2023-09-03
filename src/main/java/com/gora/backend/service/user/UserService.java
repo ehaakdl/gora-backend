@@ -1,6 +1,8 @@
 package com.gora.backend.service.user;
 
+import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import org.springframework.security.crypto.password.PasswordEncoder;
@@ -13,9 +15,12 @@ import com.gora.backend.common.token.TokenUtils;
 import com.gora.backend.common.token.eTokenType;
 import com.gora.backend.exception.BadRequestException;
 import com.gora.backend.model.TokenInfo;
+import com.gora.backend.model.entity.EmailVerifyEntity;
 import com.gora.backend.model.entity.TokenEntity;
 import com.gora.backend.model.entity.UserEntity;
+import com.gora.backend.model.entity.eTokenUseType;
 import com.gora.backend.model.entity.eUserType;
+import com.gora.backend.repository.EmailVerifyRepository;
 import com.gora.backend.repository.TokenRepository;
 import com.gora.backend.repository.UserRepository;
 
@@ -28,6 +33,7 @@ public class UserService {
     private final TokenRepository tokenRepository;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
+    private final EmailVerifyRepository emailVerifyRepository;
 
     @Transactional
     public String login(String email, String password){
@@ -46,7 +52,7 @@ public class UserService {
         TokenInfo accessTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.ACCESS);
         TokenInfo refreshTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.REFRESH);
         tokenRepository.save(
-                TokenEntity.createAccessToken(
+                TokenEntity.createLoginToken(
                         user, accessTokenInfo.getToken(), refreshTokenInfo.getToken(), accessTokenInfo.getExpiredAt()));
 
         return accessTokenInfo.getToken();
@@ -57,8 +63,47 @@ public class UserService {
         if(userRepository.existsByEmail(email)){
             throw new BadRequestException(ResponseCode.EXISTS_EMAIL);
         }
+        EmailVerifyEntity emailVerifyEntityLastest = emailVerifyRepository.findTopByEmailOrderByVerifiedExpireAt(email).orElse(null);
+        if(emailVerifyEntityLastest == null){
+            throw new BadRequestException(ResponseCode.EXPIRED);
+        }
+
+        Date nowAt = new Date();
+        if(emailVerifyEntityLastest.getVerifiedExpireAt().getTime() < nowAt.getTime()){
+            throw new BadRequestException(ResponseCode.EXPIRED);
+        }
+
+        List<EmailVerifyEntity> emailVerifyEntities = emailVerifyRepository.findAllByEmail(email);
+        for (EmailVerifyEntity emailVerifyEntity : emailVerifyEntities) {
+            emailVerifyRepository.delete(emailVerifyEntity);
+        }
 
         userRepository.save(UserEntity.createBasicUser(passwordEncoder.encode(password), email));
     }
+
+    @Transactional
+    public void verifyToken(String accessToken) {
+        TokenEntity tokenEntity = tokenRepository.findByAccessAndTypeAndExpireAtAfter(accessToken, eTokenUseType.email_verify, new Date()).orElse(null);
+        if(tokenEntity == null){
+            throw new BadRequestException(ResponseCode.EXPIRED);
+        }
+
+        EmailVerifyEntity emailVerifyEntity = tokenEntity.getEmailVerify();
+        if(emailVerifyEntity == null){
+            throw new BadRequestException(ResponseCode.BAD_REQUEST);
+        }
+
+        final long VALID_TIME = 1000 * 60 * 3;
+        Date verifiedExpiredAt = new Date(System.currentTimeMillis() + VALID_TIME);
+        emailVerifyEntity.setVerifiedExpireAt(verifiedExpiredAt);
+    }
     
+    @Transactional
+    public void createVerifyToken(String email) {
+        TokenInfo tokenInfo = tokenUtils.createToken(null, eTokenType.EMAIL_VERIFY);
+
+        TokenEntity tokenEntity = TokenEntity.createEmailVerifyToken(null, tokenInfo.getToken(), tokenInfo.getExpiredAt());
+        EmailVerifyEntity emailVerifyEntity = EmailVerifyEntity.create(tokenEntity, email, null);
+        emailVerifyRepository.save(emailVerifyEntity);
+    }
 }

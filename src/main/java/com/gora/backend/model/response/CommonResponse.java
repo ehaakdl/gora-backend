@@ -11,8 +11,4 @@ public class CommonResponse {
     private Object data;
     private int code;
     private String message;
-
-    public static CommonResponse createEmpty(){
-        return CommonResponse.builder().build();
-    }
 }

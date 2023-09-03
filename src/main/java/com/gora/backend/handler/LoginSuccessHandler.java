@@ -116,7 +116,7 @@ public class LoginSuccessHandler {
         TokenInfo accessTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.ACCESS);
         TokenInfo refreshTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.REFRESH);
         tokenRepository.save(
-                TokenEntity.createAccessToken(
+                TokenEntity.createLoginToken(
                         user, accessTokenInfo.getToken(), refreshTokenInfo.getToken(), accessTokenInfo.getExpiredAt()));
 
         setResponse(response, accessTokenInfo.getToken());

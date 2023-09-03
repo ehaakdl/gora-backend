@@ -11,7 +11,10 @@ import lombok.RequiredArgsConstructor;
 public enum ResponseCode {
     I_DONT_KWON(1, HttpStatus.INTERNAL_SERVER_ERROR),
     BAD_REQUEST(2, HttpStatus.BAD_REQUEST),
-    EXISTS_EMAIL(3, HttpStatus.BAD_REQUEST);
+    EXISTS_EMAIL(3, HttpStatus.BAD_REQUEST),
+    SUCCESS(4, HttpStatus.OK),
+    EXPIRED(5, HttpStatus.BAD_REQUEST);
+    
     private final int code;
     private final HttpStatusCode httpStatusCode;
 }
