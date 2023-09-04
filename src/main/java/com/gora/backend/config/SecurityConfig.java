@@ -23,7 +23,7 @@ import com.gora.backend.handler.LoginSuccessHandler;
 import com.gora.backend.model.eIgnoreSecurityPath;
 import com.gora.backend.repository.TokenRepository;
 import com.gora.backend.repository.UserRepository;
-import com.gora.backend.repository.UserRoleCustomRepository;
+import com.gora.backend.repository.UserRoleRepository;
 import com.gora.backend.service.security.AuthenticationFailHandlerImpl;
 import com.gora.backend.service.security.AuthenticationSuccessHandlerImpl;
 import com.gora.backend.service.security.JwtTokenProvider;
@@ -37,7 +37,6 @@ import lombok.RequiredArgsConstructor;
 @EnableWebSecurity
 @RequiredArgsConstructor
 public class SecurityConfig {
-    private final UserRoleCustomRepository userRoleCustomRepository;
     private final LoginSuccessHandler loginSuccessHandler;
     private final TokenRepository tokenRepository;
     private final Environment environment;
@@ -46,7 +45,8 @@ public class SecurityConfig {
     private final LogoutSuccessHandlerImpl logoutSuccessHandler;
     private final MessageSource messageSource;
     private final ObjectMapper objectMapper;
-
+    private final UserRoleRepository userRoleRepository;
+    
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         final String loginPageUrl = environment.getProperty(EnvironmentKey.APP_FRONT_URL) + FrontUrl.LOGIN;
@@ -109,7 +109,7 @@ public class SecurityConfig {
 
     @Bean
     UserDetailsServiceImpl UserDetailsServiceImpl() {
-        return new UserDetailsServiceImpl(userRepository, userRoleCustomRepository);
+        return new UserDetailsServiceImpl(userRepository, userRoleRepository);
     }
 
     @Bean

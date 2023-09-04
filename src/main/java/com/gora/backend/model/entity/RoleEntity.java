@@ -1,7 +1,13 @@
 package com.gora.backend.model.entity;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Set;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.experimental.SuperBuilder;
@@ -20,4 +26,8 @@ public class RoleEntity extends DefaultColumn{
     private String code;
     @Column
     private String displayName;
+    
+    @Builder.Default
+    @OneToMany(mappedBy = "role")
+    private List<RolePrivilegeEntity> rolePrivilegeEntityEntities = new ArrayList<>();
 }

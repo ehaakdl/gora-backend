@@ -1,6 +1,6 @@
 package com.gora.backend.model.entity;
 
-import com.gora.backend.model.entity.id.RolePrivilegeId;
+
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -10,21 +10,25 @@ import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.UpdateTimestamp;
 
 import java.util.Date;
+import java.util.HashSet;
+import java.util.Set;
 
 @Entity
 @Table(name = "role_privilege")
 @Getter
-@IdClass(RolePrivilegeId.class)
 @AllArgsConstructor
 @Builder
 @NoArgsConstructor
 public class RolePrivilegeEntity {
     @Id
-    @Column
-    private long roleSeq;
-    @Id
-    @Column
-    private long privilegeSeq;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long seq;
+    @ManyToOne
+    @JoinColumn(name = "role_seq")
+    private RoleEntity role;
+    @ManyToOne
+    @JoinColumn(name = "privilege_seq")
+    private PrivilegeEntity privilege;
     @CreationTimestamp
     @Column
     private Date createdAt;
