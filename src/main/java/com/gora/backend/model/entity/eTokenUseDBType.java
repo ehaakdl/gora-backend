@@ -1,5 +1,5 @@
 package com.gora.backend.model.entity;
 
-public enum eTokenUseType {
+public enum eTokenUseDBType {
     email_verify, login
 }

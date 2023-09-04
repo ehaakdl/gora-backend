@@ -18,7 +18,7 @@ import com.gora.backend.model.TokenInfo;
 import com.gora.backend.model.entity.EmailVerifyEntity;
 import com.gora.backend.model.entity.TokenEntity;
 import com.gora.backend.model.entity.UserEntity;
-import com.gora.backend.model.entity.eTokenUseType;
+import com.gora.backend.model.entity.eTokenUseDBType;
 import com.gora.backend.model.entity.eUserType;
 import com.gora.backend.repository.EmailVerifyRepository;
 import com.gora.backend.repository.TokenRepository;
@@ -83,7 +83,7 @@ public class UserService {
 
     @Transactional
     public void verifyToken(String accessToken) {
-        TokenEntity tokenEntity = tokenRepository.findByAccessAndTypeAndAccessExpireAtAfter(accessToken, eTokenUseType.email_verify, new Date()).orElse(null);
+        TokenEntity tokenEntity = tokenRepository.findByAccessAndTypeAndAccessExpireAtAfter(accessToken, eTokenUseDBType.email_verify, new Date()).orElse(null);
         if(tokenEntity == null){
             throw new BadRequestException(ResponseCode.EXPIRED);
         }

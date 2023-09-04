@@ -40,7 +40,7 @@ public class TokenEntity {
     @Column
     private String access;
     @Column
-    private eTokenUseType type;
+    private eTokenUseDBType type;
 
     public static TokenEntity createLoginToken(UserEntity user, String access, String refresh, Date accessExpireAt) {
         return TokenEntity.builder()
@@ -48,7 +48,7 @@ public class TokenEntity {
                 .refresh(refresh)
                 .accessExpireAt(accessExpireAt)
                 .user(user)
-                .type(eTokenUseType.login)
+                .type(eTokenUseDBType.login)
                 .build();
     }
 
@@ -57,7 +57,7 @@ public class TokenEntity {
                 .access(access)
                 .emailVerify(emailVerify)
                 .accessExpireAt(accessExpireAt)
-                .type(eTokenUseType.email_verify)
+                .type(eTokenUseDBType.email_verify)
                 .build();
     }
 }

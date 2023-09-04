@@ -34,6 +34,7 @@ spring:
     database: mysql
     properties:
       hibernate:
+        dialect: org.hibernate.dialect.MySQLDialect
         format_sql: true
 
 springdoc:
