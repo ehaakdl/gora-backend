@@ -83,7 +83,7 @@ public class UserService {
 
     @Transactional
     public void verifyToken(String accessToken) {
-        TokenEntity tokenEntity = tokenRepository.findByAccessAndTypeAndExpireAtAfter(accessToken, eTokenUseType.email_verify, new Date()).orElse(null);
+        TokenEntity tokenEntity = tokenRepository.findByAccessAndTypeAndAccessExpireAtAfter(accessToken, eTokenUseType.email_verify, new Date()).orElse(null);
         if(tokenEntity == null){
             throw new BadRequestException(ResponseCode.EXPIRED);
         }
