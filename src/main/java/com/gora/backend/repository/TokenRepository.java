@@ -11,4 +11,5 @@ import com.gora.backend.model.entity.eTokenUseDBType;
 public interface TokenRepository extends JpaRepository<TokenEntity, String> {
     Optional<TokenEntity> findByAccess(String accessToken);
     Optional<TokenEntity> findByAccessAndTypeAndAccessExpireAtAfter(String accessToken, eTokenUseDBType type, Date accessExpireAt);
+    void deleteByAccess(String accessToken);
 }
