@@ -2,6 +2,8 @@ package com.gora.backend.config;
 
 import static com.gora.backend.model.eIgnoreSecurityPath.*;
 
+import java.util.Arrays;
+
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -12,6 +14,10 @@ import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.AuthenticationFailureHandler;
 import org.springframework.security.web.authentication.AuthenticationSuccessHandler;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
+import org.springframework.web.cors.CorsConfiguration;
+import org.springframework.web.cors.CorsConfigurationSource;
+import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gora.backend.common.EnvironmentKey;
 import com.gora.backend.common.FrontUrl;
@@ -47,6 +53,21 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final UserRoleRepository userRoleRepository;
     private final LogoutHandlerImpl logoutHandlerImpl;
+
+    @Bean
+	CorsConfigurationSource corsConfigurationSource() {
+		CorsConfiguration configuration = new CorsConfiguration();
+
+		configuration.setAllowedOriginPatterns(Arrays.asList("*"));
+		configuration.setAllowedMethods(Arrays.asList("HEAD","POST","GET","DELETE","PUT"));
+		configuration.setAllowedHeaders(Arrays.asList("*"));
+		configuration.setAllowCredentials(true);
+		
+		UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
+		source.registerCorsConfiguration("/**", configuration);
+		return source;
+	}
+    
     @Bean
     SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         final String loginPageUrl = environment.getProperty(EnvironmentKey.APP_FRONT_URL) + FrontUrl.LOGIN;
