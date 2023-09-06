@@ -19,7 +19,6 @@ public enum eIgnoreSecurityPath {
     , LOGOUT(AntPathRequestMatcher.antMatcher("/api/v1/logout"))
     , LOGIN(AntPathRequestMatcher.antMatcher("/api/v1/login"))
     , SIGNUP(AntPathRequestMatcher.antMatcher("/api/v1/signup"))
-    , DOWNLOAD(AntPathRequestMatcher.antMatcher("/api/v1/download/client"))
     ;
 
     private final AntPathRequestMatcher requestMatcher;
