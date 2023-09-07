@@ -20,10 +20,14 @@ import com.gora.backend.model.entity.TokenEntity;
 import com.gora.backend.model.entity.UserEntity;
 import com.gora.backend.model.entity.eTokenUseDBType;
 import com.gora.backend.model.entity.eUserType;
+import com.gora.backend.repository.EmailVerifyCustomRepository;
 import com.gora.backend.repository.EmailVerifyRepository;
 import com.gora.backend.repository.TokenRepository;
 import com.gora.backend.repository.UserRepository;
 
+import jakarta.validation.Valid;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
 
 @Service
@@ -34,7 +38,7 @@ public class UserService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailVerifyRepository emailVerifyRepository;
-
+    private final EmailVerifyCustomRepository emailVerifyCustomRepository;
     @Transactional
     public String login(String email, String password){
         UserEntity user = userRepository.findByEmailAndType(email,eUserType.basic).orElse(null);
@@ -63,13 +67,8 @@ public class UserService {
         if(userRepository.existsByEmail(email)){
             throw new BadRequestException(ResponseCode.EXISTS_EMAIL);
         }
-        EmailVerifyEntity emailVerifyEntityLastest = emailVerifyRepository.findTopByEmailOrderByVerifiedExpireAt(email).orElse(null);
-        if(emailVerifyEntityLastest == null){
-            throw new BadRequestException(ResponseCode.EXPIRED);
-        }
-
-        Date nowAt = new Date();
-        if(emailVerifyEntityLastest.getVerifiedExpireAt().getTime() < nowAt.getTime()){
+        
+        if(!emailVerifyCustomRepository.existsEmailVerified(email)){
             throw new BadRequestException(ResponseCode.EXPIRED);
         }
 
@@ -99,11 +98,13 @@ public class UserService {
     }
     
     @Transactional
-    public void createVerifyToken(String email) {
+    public void sendVerifyEmail(@Valid @NotBlank @Email String email) {
         TokenInfo tokenInfo = tokenUtils.createToken(null, eTokenType.EMAIL_VERIFY);
 
-        TokenEntity tokenEntity = TokenEntity.createEmailVerifyToken(null, tokenInfo.getToken(), tokenInfo.getExpiredAt());
-        EmailVerifyEntity emailVerifyEntity = EmailVerifyEntity.create(tokenEntity, email, null);
-        emailVerifyRepository.save(emailVerifyEntity);
+        EmailVerifyEntity emailVerifyEntity = EmailVerifyEntity.builder().email(email).build();
+        TokenEntity tokenEntity = TokenEntity.createEmailVerifyToken(emailVerifyEntity, tokenInfo.getToken(), tokenInfo.getExpiredAt());
+        tokenRepository.save(tokenEntity);
+        
+        // todo 메일 발송
     }
 }

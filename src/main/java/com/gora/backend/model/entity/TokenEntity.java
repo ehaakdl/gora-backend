@@ -2,6 +2,7 @@ package com.gora.backend.model.entity;
 
 import java.util.Date;
 
+import jakarta.persistence.CascadeType;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.FetchType;
@@ -17,6 +18,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 @Entity
 @Table(name = "token")
@@ -31,7 +33,8 @@ public class TokenEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "user_seq")
     private UserEntity user;
-    @OneToOne
+    @OneToOne(cascade = CascadeType.ALL)
+    @JoinColumn(name = "email_verify_seq")
     private EmailVerifyEntity emailVerify;
     @Column
     private String refresh;
@@ -41,6 +44,10 @@ public class TokenEntity {
     private String access;
     @Column
     private eTokenUseDBType type;
+
+    public void setEmailVerify(EmailVerifyEntity emailVerify) {
+        this.emailVerify = emailVerify;
+    }
 
     public static TokenEntity createLoginToken(UserEntity user, String access, String refresh, Date accessExpireAt) {
         return TokenEntity.builder()

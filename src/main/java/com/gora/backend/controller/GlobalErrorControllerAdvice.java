@@ -2,7 +2,9 @@ package com.gora.backend.controller;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.converter.HttpMessageConversionException;
+import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
@@ -39,7 +41,11 @@ public class GlobalErrorControllerAdvice {
         return responseModel;
     }
 
-    @ExceptionHandler({HttpMessageConversionException.class, MethodArgumentNotValidException.class, BadRequestException.class})
+    @ExceptionHandler({
+        HttpMessageConversionException.class, MethodArgumentNotValidException.class
+        , BadRequestException.class, MissingServletRequestParameterException.class
+        , HttpRequestMethodNotSupportedException.class
+    })
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     @ResponseBody
     private ErrorResponse badRequest(Exception ex) {
