@@ -1,8 +1,7 @@
 package com.gora.backend.validation;
 
-import java.util.Optional;
 
-import com.mysql.cj.util.StringUtils;
+import org.apache.commons.lang3.StringUtils;
 
 import jakarta.validation.ConstraintValidator;
 import jakarta.validation.ConstraintValidatorContext;
@@ -11,7 +10,7 @@ public class PasswordCheckValidation implements ConstraintValidator<PasswordChec
 
     @Override
     public boolean isValid(String value, ConstraintValidatorContext context) {
-        if(StringUtils.isEmptyOrWhitespaceOnly(value)){
+        if(StringUtils.isBlank(value)){
             return false;
         }else{
             return value.length() <= 15;
