@@ -71,8 +71,7 @@ public class SecurityConfig {
         final String loginPageUrl = environment.getProperty(EnvironmentKey.APP_FRONT_URL) + FrontUrl.LOGIN;
         http
                 .csrf(csrf -> csrf.disable())
-                .cors().configurationSource(corsConfigurationSource())
-                .and()
+                .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .headers(headers -> headers.frameOptions().disable())
                 .authorizeHttpRequests()
                 .requestMatchers(getAntRequestMatchers()).permitAll()
