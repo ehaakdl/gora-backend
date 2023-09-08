@@ -5,15 +5,20 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.springframework.context.MessageSource;
+import org.springframework.core.env.Environment;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.gora.backend.common.EnvironmentKey;
+import com.gora.backend.common.FrontUrl;
 import com.gora.backend.common.ResponseCode;
 import com.gora.backend.common.TokenClaimsName;
 import com.gora.backend.common.token.TokenUtils;
 import com.gora.backend.common.token.eTokenType;
 import com.gora.backend.exception.BadRequestException;
+import com.gora.backend.model.EmailMessage;
 import com.gora.backend.model.TokenInfo;
 import com.gora.backend.model.entity.EmailVerifyEntity;
 import com.gora.backend.model.entity.TokenEntity;
@@ -24,6 +29,7 @@ import com.gora.backend.repository.EmailVerifyCustomRepository;
 import com.gora.backend.repository.EmailVerifyRepository;
 import com.gora.backend.repository.TokenRepository;
 import com.gora.backend.repository.UserRepository;
+import com.gora.backend.service.EmailService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -34,11 +40,15 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserService {
     private final TokenUtils tokenUtils;
+    private final Environment environment;
     private final TokenRepository tokenRepository;
+    private final MessageSource messageSource;
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final EmailVerifyRepository emailVerifyRepository;
     private final EmailVerifyCustomRepository emailVerifyCustomRepository;
+    private final EmailService emailService;
+
     @Transactional
     public String login(String email, String password){
         UserEntity user = userRepository.findByEmailAndType(email,eUserType.basic).orElse(null);
@@ -105,6 +115,8 @@ public class UserService {
         TokenEntity tokenEntity = TokenEntity.createEmailVerifyToken(emailVerifyEntity, tokenInfo.getToken(), tokenInfo.getExpiredAt());
         tokenRepository.save(tokenEntity);
         
-        // todo 메일 발송
+        String emailVerifyUrl = environment.getProperty(EnvironmentKey.APP_FRONT_URL) + FrontUrl.EMAIL_VERIFY + "?accessToken=" + tokenInfo.getToken(); 
+        String subject = messageSource.getMessage("email.verifyMail.subject",null, null);
+        emailService.send(EmailMessage.create(email, emailVerifyUrl, subject));
     }
 }
