@@ -1,12 +1,8 @@
 package com.gora.backend.repository;
 
-import java.util.Date;
-
 import org.springframework.stereotype.Repository;
 
-import com.gora.backend.model.entity.EmailVerifyEntity;
 import com.gora.backend.model.entity.QEmailVerifyEntity;
-import com.gora.backend.model.entity.UserEntity;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 

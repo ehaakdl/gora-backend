@@ -10,8 +10,6 @@ import org.springframework.core.io.FileSystemResource;
 import org.springframework.core.io.Resource;
 import org.springframework.stereotype.Component;
 
-import com.gora.backend.exception.BadRequestException;
-
 @Component
 public class CommonUtils {
     public InputStream loadResourceAsStream(String resourceLocation) throws IOException {

@@ -1,8 +1,6 @@
 package com.gora.backend.config;
 
-import static com.gora.backend.model.eIgnoreSecurityPath.*;
-
-import java.util.Arrays;
+import static com.gora.backend.model.eIgnoreSecurityPath.getAntRequestMatchers;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
