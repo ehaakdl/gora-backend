@@ -112,7 +112,7 @@ public class UserService {
         TokenInfo tokenInfo = tokenUtils.createToken(null, eTokenType.EMAIL_VERIFY);
 
         EmailVerifyEntity emailVerifyEntity = EmailVerifyEntity.builder().email(email).build();
-        TokenEntity tokenEntity = TokenEntity.createEmailVerifyToken(emailVerifyEntity, tokenInfo.getToken(), tokenInfo.getExpiredAt());
+        TokenEntity tokenEntity = TokenEntity.createEmailVerifyToken(emailVerifyEntity, tokenInfo.getToken(), tokenInfo.getExpiredAt());        
         tokenRepository.save(tokenEntity);
         
         String emailVerifyUrl = environment.getProperty(EnvironmentKey.APP_FRONT_URL) + FrontUrl.EMAIL_VERIFY + "?accessToken=" + tokenInfo.getToken(); 

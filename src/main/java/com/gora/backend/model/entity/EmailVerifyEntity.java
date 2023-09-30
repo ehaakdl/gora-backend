@@ -28,6 +28,7 @@ public class EmailVerifyEntity {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long seq;
     @OneToOne(mappedBy = "emailVerify", cascade = CascadeType.ALL)
+    @Setter
     private TokenEntity token;
     @Column
     @Setter

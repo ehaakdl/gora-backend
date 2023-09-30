@@ -18,7 +18,6 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 @Entity
 @Table(name = "token")
@@ -60,11 +59,15 @@ public class TokenEntity {
     }
 
     public static TokenEntity createEmailVerifyToken(EmailVerifyEntity emailVerify, String access, Date accessExpireAt) {
-        return TokenEntity.builder()
+        TokenEntity tokenEntity = TokenEntity.builder()
                 .access(access)
                 .emailVerify(emailVerify)
                 .accessExpireAt(accessExpireAt)
                 .type(eTokenUseDBType.email_verify)
                 .build();
+
+        emailVerify.setToken(tokenEntity);
+
+        return tokenEntity;
     }
 }
