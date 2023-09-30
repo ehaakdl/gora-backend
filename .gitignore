@@ -33,3 +33,4 @@ out/
 /nbdist/
 /.nb-gradle/
 
+/game-client.zip

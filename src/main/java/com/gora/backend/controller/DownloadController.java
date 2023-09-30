@@ -27,11 +27,11 @@ public class DownloadController {
 
     // 파일형식이 다르다 런타임과 jar 실행은 그래서 loadResourceAsStream 함수 호출 필요함
     @GetMapping("/client")
-    public ResponseEntity<Resource> downloadClient() throws IOException {        
-        String tempFilePath = "." + File.separator + "game-client.zip";
-        String resourceFilePath = File.separator + "static" + File. separator + "game-client.zip";
+    public ResponseEntity<Resource> downloadClient() throws IOException {
+        String tempFilePath = "./game-client.zip";
+        String resourceFilePath =  "/static/game-client.zip";
         Resource resource = commonUtils.convertFileToResource(resourceFilePath, tempFilePath);
-        if(resource == null){
+        if (resource == null) {
             throw new BadRequestException(ResponseCode.I_DONT_KWON);
         }
 
@@ -40,5 +40,5 @@ public class DownloadController {
                 .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + "client.zip" + "\"")
                 .body(resource);
     }
-            
+
 }
