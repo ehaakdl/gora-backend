@@ -27,7 +27,7 @@ public class UserController {
 
     @PostMapping("/login")
     public CommonResponse login(@Valid @RequestBody LoginRequest loginRequest) {
-        String accessToken = userService.login(loginRequest.getEmail(), loginRequest.getPassword());
+        String accessToken = userService.login(loginRequest.getEmail(), loginRequest.getPassword(), loginRequest.isGameClient());
         return CommonResponse.builder().data(accessToken).build();
     }
 

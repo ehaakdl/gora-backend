@@ -50,35 +50,47 @@ public class UserService {
     private final EmailService emailService;
 
     @Transactional
-    public String login(String email, String password){
-        UserEntity user = userRepository.findByEmailAndType(email,eUserType.basic).orElse(null);
-        if(user == null){
+    public String login(String email, String password, boolean isGameClient) {
+        UserEntity user = userRepository.findByEmailAndType(email, eUserType.basic).orElse(null);
+        if (user == null) {
             throw new BadRequestException(ResponseCode.BAD_REQUEST);
         }
-        
-        if(!passwordEncoder.matches(password, user.getPassword())){
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             return null;
         }
 
         // 토큰 저장
         Map<String, Object> claimsMap = new HashMap<>();
         claimsMap.put(TokenClaimsName.EMAIL, email);
-        TokenInfo accessTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.ACCESS);
-        TokenInfo refreshTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.REFRESH);
-        tokenRepository.save(
-                TokenEntity.createLoginToken(
-                        user, accessTokenInfo.getToken(), refreshTokenInfo.getToken(), accessTokenInfo.getExpiredAt()));
+        TokenInfo accessTokenInfo;
+        TokenInfo refreshTokenInfo;
+        if (isGameClient) {
+            accessTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.CLIENT_IDENTIFIER);
+            tokenRepository.save(
+                    TokenEntity.createLoginToken(
+                            user, accessTokenInfo.getToken(), accessTokenInfo.getToken(),
+                            accessTokenInfo.getExpiredAt()));
+        } else {
+            accessTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.ACCESS);
+            refreshTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.REFRESH);
+            tokenRepository.save(
+                    TokenEntity.createLoginToken(
+                            user, accessTokenInfo.getToken(), refreshTokenInfo.getToken(),
+                            accessTokenInfo.getExpiredAt()));
+        }
 
+        
         return accessTokenInfo.getToken();
     }
 
     @Transactional
-    public void signup(String email, String password){
-        if(userRepository.existsByEmail(email)){
+    public void signup(String email, String password) {
+        if (userRepository.existsByEmail(email)) {
             throw new BadRequestException(ResponseCode.EXISTS_EMAIL);
         }
-        
-        if(!emailVerifyCustomRepository.existsEmailVerified(email)){
+
+        if (!emailVerifyCustomRepository.existsEmailVerified(email)) {
             throw new BadRequestException(ResponseCode.EXPIRED);
         }
 
@@ -92,13 +104,15 @@ public class UserService {
 
     @Transactional
     public void verifyToken(String accessToken) {
-        TokenEntity tokenEntity = tokenRepository.findByAccessAndTypeAndAccessExpireAtAfter(accessToken, eTokenUseDBType.email_verify, new Date()).orElse(null);
-        if(tokenEntity == null){
+        TokenEntity tokenEntity = tokenRepository
+                .findByAccessAndTypeAndAccessExpireAtAfter(accessToken, eTokenUseDBType.email_verify, new Date())
+                .orElse(null);
+        if (tokenEntity == null) {
             throw new BadRequestException(ResponseCode.EXPIRED);
         }
 
         EmailVerifyEntity emailVerifyEntity = tokenEntity.getEmailVerify();
-        if(emailVerifyEntity == null){
+        if (emailVerifyEntity == null) {
             throw new BadRequestException(ResponseCode.BAD_REQUEST);
         }
 
@@ -106,17 +120,19 @@ public class UserService {
         Date verifiedExpiredAt = new Date(System.currentTimeMillis() + VALID_TIME);
         emailVerifyEntity.setVerifiedExpireAt(verifiedExpiredAt);
     }
-    
+
     @Transactional
     public void sendVerifyEmail(@Valid @NotBlank @Email String email) {
         TokenInfo tokenInfo = tokenUtils.createToken(null, eTokenType.EMAIL_VERIFY);
 
         EmailVerifyEntity emailVerifyEntity = EmailVerifyEntity.builder().email(email).build();
-        TokenEntity tokenEntity = TokenEntity.createEmailVerifyToken(emailVerifyEntity, tokenInfo.getToken(), tokenInfo.getExpiredAt());        
+        TokenEntity tokenEntity = TokenEntity.createEmailVerifyToken(emailVerifyEntity, tokenInfo.getToken(),
+                tokenInfo.getExpiredAt());
         tokenRepository.save(tokenEntity);
-        
-        String emailVerifyUrl = environment.getProperty(EnvironmentKey.APP_FRONT_URL) + FrontUrl.EMAIL_VERIFY + "?accessToken=" + tokenInfo.getToken(); 
-        String subject = messageSource.getMessage("email.verifyMail.subject",null, null);
+
+        String emailVerifyUrl = environment.getProperty(EnvironmentKey.APP_FRONT_URL) + FrontUrl.EMAIL_VERIFY
+                + "?accessToken=" + tokenInfo.getToken();
+        String subject = messageSource.getMessage("email.verifyMail.subject", null, null);
         emailService.send(EmailMessage.create(email, emailVerifyUrl, subject));
     }
 }

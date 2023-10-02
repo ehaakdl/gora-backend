@@ -23,6 +23,9 @@
             "request": "launch",
             "mainClass": "com.gora.backend.BackendApplication",
             "projectName": "gora.backend",
+            "vmArgs": [
+                "-Duser.timezone=GMT"
+            ],
             "env": {
                 "DB_USERNAME": "gora",
                 "DB_PASSWORD": 1234,
