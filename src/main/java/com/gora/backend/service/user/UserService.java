@@ -123,4 +123,15 @@ public class UserService {
         String subject = messageSource.getMessage("email.verifyMail.subject", null, null);
         emailService.send(EmailMessage.create(email, emailVerifyUrl, subject));
     }
+
+    public boolean checkLoginUserToken(@Valid @NotBlank String token) {
+        TokenEntity tokenEntity = tokenRepository.findByAccessAndTypeAndAccessExpireAtAfter(token, eTokenUseDBType.login, new Date())
+        .orElse(null);
+
+        if(tokenEntity == null){
+            return false;
+        }else{
+            return true;
+        }
+    }
 }
