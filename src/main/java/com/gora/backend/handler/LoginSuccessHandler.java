@@ -19,7 +19,7 @@ import com.gora.backend.common.RoleCode;
 import com.gora.backend.common.TokenClaimsName;
 import com.gora.backend.common.token.TokenUtils;
 import com.gora.backend.common.token.eTokenType;
-import com.gora.backend.model.TokenInfo;
+import com.gora.backend.model.TokenInfoDto;
 import com.gora.backend.model.entity.TokenEntity;
 import com.gora.backend.model.entity.UserEntity;
 import com.gora.backend.model.entity.UserRoleEntity;
@@ -113,8 +113,8 @@ public class LoginSuccessHandler {
             throw new RuntimeException("일반 유저 권한 지정 불가");
         });
 
-        TokenInfo accessTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.ACCESS);
-        TokenInfo refreshTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.REFRESH);
+        TokenInfoDto accessTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.ACCESS);
+        TokenInfoDto refreshTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.REFRESH);
         tokenRepository.save(
                 TokenEntity.createLoginToken(
                         user, accessTokenInfo.getToken(), refreshTokenInfo.getToken(), accessTokenInfo.getExpiredAt()));

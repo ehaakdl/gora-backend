@@ -19,7 +19,7 @@ import com.gora.backend.common.token.TokenUtils;
 import com.gora.backend.common.token.eTokenType;
 import com.gora.backend.exception.BadRequestException;
 import com.gora.backend.model.EmailMessage;
-import com.gora.backend.model.TokenInfo;
+import com.gora.backend.model.TokenInfoDto;
 import com.gora.backend.model.entity.EmailVerifyEntity;
 import com.gora.backend.model.entity.TokenEntity;
 import com.gora.backend.model.entity.UserEntity;
@@ -63,8 +63,8 @@ public class UserService {
         // 토큰 저장
         Map<String, Object> claimsMap = new HashMap<>();
         claimsMap.put(TokenClaimsName.EMAIL, email);
-        TokenInfo accessTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.ACCESS);
-        TokenInfo refreshTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.REFRESH);
+        TokenInfoDto accessTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.ACCESS);
+        TokenInfoDto refreshTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.REFRESH);
         tokenRepository.save(
                 TokenEntity.createLoginToken(
                         user, accessTokenInfo.getToken(), refreshTokenInfo.getToken(), accessTokenInfo.getExpiredAt()));
@@ -111,7 +111,7 @@ public class UserService {
 
     @Transactional
     public void sendVerifyEmail(@Valid @NotBlank @Email String email) {
-        TokenInfo tokenInfo = tokenUtils.createToken(null, eTokenType.EMAIL_VERIFY);
+        TokenInfoDto tokenInfo = tokenUtils.createToken(null, eTokenType.EMAIL_VERIFY);
 
         EmailVerifyEntity emailVerifyEntity = EmailVerifyEntity.builder().email(email).build();
         TokenEntity tokenEntity = TokenEntity.createEmailVerifyToken(emailVerifyEntity, tokenInfo.getToken(),

@@ -9,7 +9,7 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
 
-import com.gora.backend.model.TokenInfo;
+import com.gora.backend.model.TokenInfoDto;
 
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
@@ -60,10 +60,10 @@ public class TokenUtils {
                 .compact();
     }
 
-    public TokenInfo createToken(Map<String, Object> claimsMap, eTokenType type){
+    public TokenInfoDto createToken(Map<String, Object> claimsMap, eTokenType type){
         Date nowAt = new Date();
         Date expiredAt = new Date(nowAt.getTime() + type.getExpirePeriod());
         String token = createToken(claimsMap, type.getSubject(), expiredAt);
-        return new TokenInfo("Bearer "+ token, expiredAt);
+        return new TokenInfoDto("Bearer "+ token, expiredAt);
     }
 }
