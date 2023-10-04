@@ -1,7 +1,5 @@
 package com.gora.backend.model.request;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.Data;
@@ -13,6 +11,4 @@ public class LoginRequest {
   private String email;
   @NotBlank
   private String password;
-  @JsonProperty("isGameClient")
-  private boolean isGameClient;
 }

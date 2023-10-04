@@ -16,10 +16,6 @@ public enum eTokenType {
     , EMAIL_VERIFY(
         1000L * 60 * 3
         , "email_verify"
-    ),
-    CLIENT_IDENTIFIER(
-            1000L * 60 * 60 * 24 * 365
-            , "access"
     );
 
     private final long expirePeriod;

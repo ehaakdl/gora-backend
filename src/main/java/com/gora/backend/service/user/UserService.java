@@ -50,37 +50,25 @@ public class UserService {
     private final EmailService emailService;
 
     @Transactional
-    public String login(String email, String password, boolean isGameClient) {
-        UserEntity user = userRepository.findByEmailAndType(email, eUserType.basic).orElse(null);
-        if (user == null) {
+    public String login(String email, String password){
+        UserEntity user = userRepository.findByEmailAndType(email,eUserType.basic).orElse(null);
+        if(user == null){
             throw new BadRequestException(ResponseCode.BAD_REQUEST);
         }
-
-        if (!passwordEncoder.matches(password, user.getPassword())) {
-            return null;
+        
+        if(!passwordEncoder.matches(password, user.getPassword())){
+            throw new BadRequestException(ResponseCode.BAD_REQUEST);
         }
 
         // 토큰 저장
         Map<String, Object> claimsMap = new HashMap<>();
         claimsMap.put(TokenClaimsName.EMAIL, email);
-        TokenInfo accessTokenInfo;
-        TokenInfo refreshTokenInfo;
-        if (isGameClient) {
-            accessTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.CLIENT_IDENTIFIER);
-            tokenRepository.save(
-                    TokenEntity.createLoginToken(
-                            user, accessTokenInfo.getToken(), accessTokenInfo.getToken(),
-                            accessTokenInfo.getExpiredAt()));
-        } else {
-            accessTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.ACCESS);
-            refreshTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.REFRESH);
-            tokenRepository.save(
-                    TokenEntity.createLoginToken(
-                            user, accessTokenInfo.getToken(), refreshTokenInfo.getToken(),
-                            accessTokenInfo.getExpiredAt()));
-        }
+        TokenInfo accessTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.ACCESS);
+        TokenInfo refreshTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.REFRESH);
+        tokenRepository.save(
+                TokenEntity.createLoginToken(
+                        user, accessTokenInfo.getToken(), refreshTokenInfo.getToken(), accessTokenInfo.getExpiredAt()));
 
-        
         return accessTokenInfo.getToken();
     }
 
