@@ -48,7 +48,7 @@ public class UserService {
     private final EmailVerifyRepository emailVerifyRepository;
     private final EmailVerifyCustomRepository emailVerifyCustomRepository;
     private final EmailService emailService;
-
+    
     @Transactional
     public String login(String email, String password){
         UserEntity user = userRepository.findByEmailAndType(email,eUserType.basic).orElse(null);
@@ -125,9 +125,11 @@ public class UserService {
     }
 
     public boolean checkLoginUserToken(@Valid @NotBlank String token) {
-        TokenEntity tokenEntity = tokenRepository.findByAccessAndTypeAndAccessExpireAtAfter(token, eTokenUseDBType.login, new Date())
+        // 현재시간 + 5분 일때 만료 체크 
+        long FIVE_MIN = 1000 * 60 * 5;
+        TokenEntity tokenEntity = tokenRepository.findByAccessAndTypeAndAccessExpireAtAfter(token, eTokenUseDBType.login, new Date(System.currentTimeMillis() + FIVE_MIN))
         .orElse(null);
-
+               
         if(tokenEntity == null){
             return false;
         }else{
