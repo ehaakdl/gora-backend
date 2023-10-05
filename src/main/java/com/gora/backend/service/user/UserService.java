@@ -1,9 +1,7 @@
 package com.gora.backend.service.user;
 
 import java.util.Date;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
@@ -14,11 +12,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gora.backend.common.EnvironmentKey;
 import com.gora.backend.common.FrontUrl;
 import com.gora.backend.common.ResponseCode;
-import com.gora.backend.common.TokenClaimsName;
+import com.gora.backend.common.token.TokenCreator;
 import com.gora.backend.common.token.TokenUtils;
 import com.gora.backend.common.token.eTokenType;
 import com.gora.backend.exception.BadRequestException;
 import com.gora.backend.model.EmailMessage;
+import com.gora.backend.model.LoginTokenPair;
 import com.gora.backend.model.TokenInfoDto;
 import com.gora.backend.model.entity.EmailVerifyEntity;
 import com.gora.backend.model.entity.TokenEntity;
@@ -48,7 +47,8 @@ public class UserService {
     private final EmailVerifyRepository emailVerifyRepository;
     private final EmailVerifyCustomRepository emailVerifyCustomRepository;
     private final EmailService emailService;
-    
+    private final TokenCreator tokenCreator;
+
     @Transactional
     public String login(String email, String password){
         UserEntity user = userRepository.findByEmailAndType(email,eUserType.basic).orElse(null);
@@ -61,15 +61,12 @@ public class UserService {
         }
 
         // 토큰 저장
-        Map<String, Object> claimsMap = new HashMap<>();
-        claimsMap.put(TokenClaimsName.EMAIL, email);
-        TokenInfoDto accessTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.ACCESS);
-        TokenInfoDto refreshTokenInfo = tokenUtils.createToken(claimsMap, eTokenType.REFRESH);
-        tokenRepository.save(
-                TokenEntity.createLoginToken(
-                        user, accessTokenInfo.getToken(), refreshTokenInfo.getToken(), accessTokenInfo.getExpiredAt()));
+        LoginTokenPair loginTokenPair = tokenCreator.createLoginToken(email, eUserType.basic);
+        if(loginTokenPair == null){
+            throw new BadRequestException(ResponseCode.BAD_REQUEST);
+        }
 
-        return accessTokenInfo.getToken();
+        return loginTokenPair.getAccess();
     }
 
     @Transactional

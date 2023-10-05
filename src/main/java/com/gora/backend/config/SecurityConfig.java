@@ -20,6 +20,7 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gora.backend.common.EnvironmentKey;
 import com.gora.backend.common.FrontUrl;
+import com.gora.backend.common.token.TokenCreator;
 import com.gora.backend.common.token.TokenUtils;
 import com.gora.backend.filter.ExceptionHandlerFilter;
 import com.gora.backend.filter.JwtTokenAuthenticationFilter;
@@ -52,6 +53,7 @@ public class SecurityConfig {
     private final ObjectMapper objectMapper;
     private final UserRoleRepository userRoleRepository;
     private final LogoutHandlerImpl logoutHandlerImpl;
+    private final TokenCreator tokenCreator;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -62,6 +64,7 @@ public class SecurityConfig {
         configuration.addAllowedMethod(HttpMethod.POST);
         configuration.addAllowedMethod(HttpMethod.GET);
         configuration.addAllowedMethod(HttpMethod.PUT);
+        configuration.addAllowedMethod(HttpMethod.DELETE);
         configuration.setAllowCredentials(true);
 
         UrlBasedCorsConfigurationSource source = new UrlBasedCorsConfigurationSource();
@@ -100,7 +103,7 @@ public class SecurityConfig {
         http.addFilterBefore(new ExceptionHandlerFilter(messageSource, objectMapper),
                 UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JwtTokenAuthenticationFilter(jwtTokenProvider(),
-                eIgnoreSecurityPath.getAntRequestMatchers(), tokenUtils), UsernamePasswordAuthenticationFilter.class);
+                eIgnoreSecurityPath.getAntRequestMatchers(), tokenUtils, tokenCreator), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -127,6 +130,6 @@ public class SecurityConfig {
 
     @Bean
     JwtTokenProvider jwtTokenProvider() {
-        return new JwtTokenProvider(UserDetailsServiceImpl(), tokenRepository, tokenUtils);
+        return new JwtTokenProvider(UserDetailsServiceImpl(), tokenRepository);
     }
 }

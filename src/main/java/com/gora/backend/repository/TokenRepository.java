@@ -12,4 +12,5 @@ public interface TokenRepository extends JpaRepository<TokenEntity, Long> {
     Optional<TokenEntity> findByAccess(String accessToken);
     Optional<TokenEntity> findByAccessAndTypeAndAccessExpireAtAfter(String accessToken, eTokenUseDBType type, Date accessExpireAt);
     void deleteByAccess(String accessToken);
+    Optional<TokenEntity> findByAccessAndType(String accessToken, eTokenUseDBType type);
 }

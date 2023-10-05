@@ -1,7 +1,7 @@
 package com.gora.backend.controller;
 
-import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -29,14 +29,9 @@ public class UserController {
     private final UserService userService;
 
     // todo 클라이언트에서 주기적으로 토큰 체크 담당한다. 이 부분은 웹소켓으로 처리하는게 옳다. 시간없으니 임시로 웹 요청으로 처리 
-    @PostMapping("/user/auth/token-status")
+    // 클라이언트에 토큰을 체크한다.
+    @GetMapping("/user/auth/token-status")
     public void checkUserToken(HttpServletRequest request, HttpServletResponse response) {
-        boolean isValidToken = userService.checkLoginUserToken(request.getHeader(HttpHeaders.AUTHORIZATION));
-        if(!isValidToken){
-            response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        }else{
-            response.setStatus(HttpStatus.OK.value());
-        }
     }
 
     @PostMapping("/login")

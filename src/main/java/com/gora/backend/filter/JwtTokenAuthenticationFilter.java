@@ -3,13 +3,16 @@ package com.gora.backend.filter;
 import java.io.IOException;
 
 import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.web.util.matcher.RequestMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
+import com.gora.backend.common.token.TokenCreator;
 import com.gora.backend.common.token.TokenUtils;
+import com.gora.backend.model.LoginTokenPair;
 import com.gora.backend.service.security.JwtTokenProvider;
 
 import jakarta.servlet.FilterChain;
@@ -25,10 +28,11 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
     private final JwtTokenProvider jwtTokenProvider;
     private final RequestMatcher[] ignoreSecurityRequestMatchers;
     private final TokenUtils tokenUtils;
+    private final TokenCreator tokenCreator;
 
     private boolean ignoreSecurityPath(HttpServletRequest request) {
         for (RequestMatcher requestMatcher : ignoreSecurityRequestMatchers) {
-            if (requestMatcher.matcher(request).isMatch()){
+            if (requestMatcher.matcher(request).isMatch()) {
                 return true;
             }
         }
@@ -45,13 +49,26 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
         }
 
         String accessToken = tokenUtils.getAccessToken(request);
-        if(StringUtils.isBlank(accessToken)){
-                response.sendError(HttpStatus.UNAUTHORIZED.value());
-                return;
-        }
+        if (StringUtils.isBlank(accessToken)) {
+            response.sendError(HttpStatus.UNAUTHORIZED.value());
+            return;
+        } else if (!tokenUtils.isValid(accessToken)) {
+            response.sendError(HttpStatus.UNAUTHORIZED.value());
+            return;
+        } else {
+            if (tokenUtils.isExpired(accessToken)) {
+                LoginTokenPair loginTokenPair = tokenCreator.refreshLoginToken(accessToken);
+                if (loginTokenPair == null) {
+                    response.sendError(HttpStatus.UNAUTHORIZED.value());
+                    return;
+                }
+                accessToken = loginTokenPair.getAccess();
+                response.setHeader(HttpHeaders.AUTHORIZATION, accessToken);
+            }
 
-        Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
-        SecurityContextHolder.getContext().setAuthentication(authentication);
-        filterChain.doFilter(request, response);
+            Authentication authentication = jwtTokenProvider.getAuthentication(accessToken);
+            SecurityContextHolder.getContext().setAuthentication(authentication);
+            filterChain.doFilter(request, response);
+        }
     }
 }

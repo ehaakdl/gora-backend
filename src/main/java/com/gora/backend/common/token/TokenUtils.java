@@ -23,7 +23,7 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class TokenUtils {
     //    32글자 필요
-    @Value("${app.secret-key:a89e2da3-704d-4ff0-a803-c8d8dc57cbf1}")
+    @Value("${app.secret-key}")
     private String SECRET_KEY;
 
     private Key getSecretKey() {
@@ -38,8 +38,39 @@ public class TokenUtils {
         return null;
     }
 
+    public boolean isValid(String token){
+        try {
+            token = token.replace("Bearer ", "");
+            Jwts.parser()
+                    .setSigningKey(getSecretKey())
+                    .parseClaimsJws(token)
+                    .getBody();
+                    return true;
+        }catch (ExpiredJwtException e){
+            return true;
+        }catch(Exception e){
+            return false;
+        }
+    }
+
+    public boolean isExpired(String token){
+        try {
+            token = token.replace("Bearer ", "");
+            Jwts.parser()
+                    .setSigningKey(getSecretKey())
+                    .parseClaimsJws(token)
+                    .getBody();
+                    return false;
+        }catch (ExpiredJwtException e){
+            return true;
+        }catch(Exception e){
+            return false;
+        }
+    }
+    
     public String getValue(String token, String claimName){
         try {
+            token = token.replace("Bearer ", "");
             return Jwts.parser()
                     .setSigningKey(getSecretKey())
                     .parseClaimsJws(token)
