@@ -1,3 +1,5 @@
+
+
 plugins {
 	id 'java'
 	// 테스트 커버리지 report plugin
@@ -8,11 +10,25 @@ plugins {
 	// id "com.ewerk.gradle.plugins.querydsl" version '1.0.10'
 }
 
-Properties properties = new Properties()
-Reader reader = new FileReader(project.rootProject.file('src/main/resources/application.yml'))
-properties.load(reader)
+import org.yaml.snakeyaml.Yaml
+def yaml = new Yaml()
+def applicationProp = yaml.load(new FileReader(project.rootProject.file('src/main/resources/application.yml')))
+
 group = 'com.gora'
-version = properties.containsKey("app.version")
+version = applicationProp['app']['version']
+
+def port
+if(applicationProp['server'] != null) {
+	if(applicationProp['server']['port']){
+		port = applicationProp['server']['port']
+	}else{
+		port = 8080
+	}
+	
+} else {
+	port = 8080
+}
+
 java{
     sourceCompatibility = JavaVersion.VERSION_17
     targetCompatibility = JavaVersion.VERSION_17
@@ -38,6 +54,7 @@ dependencies {
 	implementation 'org.springdoc:springdoc-openapi-starter-webmvc-ui:2.1.0'
 
 // utils
+	implementation 'org.yaml:snakeyaml:2.2'
 	implementation 'com.github.gavlyukovskiy:p6spy-spring-boot-starter:1.9.0'
 	implementation 'org.apache.commons:commons-lang3:3.13.0'
 	implementation 'org.modelmapper:modelmapper:3.1.1'
@@ -56,7 +73,7 @@ dependencies {
 	implementation "com.querydsl:querydsl-apt:5.0.0:jakarta"
 	implementation "com.querydsl:querydsl-core:5.0.0"
 
-	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['querydsl.version']}:jakarta"
+	annotationProcessor "com.querydsl:querydsl-apt:${dependencyManagement.importedProperties['5.0.0']}:jakarta"
 	annotationProcessor("jakarta.persistence:jakarta.persistence-api")
 	annotationProcessor("jakarta.annotation:jakarta.annotation-api")
 
@@ -73,6 +90,42 @@ dependencies {
 
 tasks.named('test') {
 	useJUnitPlatform()
+}
+
+jib{
+	from {
+		image='openjdk:17-ea-slim-buster'
+	}
+	to {
+		image='backend'
+		tags=[version]
+	}
+
+	def envProp = new Properties()
+	file("/.docker/.env").withInputStream { envProp .load(it) }
+	
+	def envMap = envProp.entrySet().collectEntries { entry ->
+    [(entry.key): entry.value]
+	}
+	def cmdEnvArgs = envProp.collect { key, value ->
+    	"-D${key}=${value}"
+	}.join(' ')
+
+	container {
+		mainClass='com.gora.backend.BackendApplication'
+		creationTime='USE_CURRENT_TIMESTAMP'
+		environment=envMap
+		jvmFlags = ['-Duser.timezone=GMT']	
+		ports = [port]
+		entrypoint=['java', cmdEnvArgs, '-jar', '']
+	}
+	extraDirectories {
+        paths { 
+            path {
+                from = file('build/libs') 
+            }
+        }
+    }
 }
 
 // querydsl 사용할 경로 지정합니다.
@@ -108,6 +161,7 @@ jacocoTestReport {
 		html.required = true
 	}
 }
+
 jacocoTestCoverageVerification{
 	String minimumEnv = System.getenv("COVEREGE_LIMIT_PER");
 	BigDecimal minimum;
