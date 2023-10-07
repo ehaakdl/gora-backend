@@ -12,7 +12,7 @@ Reader reader = new FileReader(project.rootProject.file('src/main/resources/appl
 properties.load(reader)
 group = 'com.gora'
 version = properties.containsKey("app.version")
-sourceCompatibility = JavaVersion.VERSION_17
+sourceCompatibility = JavaVersion.VERSION_18
 
 repositories {
 	mavenCentral()

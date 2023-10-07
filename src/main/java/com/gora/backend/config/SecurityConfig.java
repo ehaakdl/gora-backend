@@ -1,6 +1,6 @@
 package com.gora.backend.config;
 
-import static com.gora.backend.model.eIgnoreSecurityPath.getAntRequestMatchers;
+import static com.gora.backend.model.eIgnoreSecurityPath.*;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -8,6 +8,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.core.env.Environment;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
+import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.web.SecurityFilterChain;
@@ -80,26 +81,25 @@ public class SecurityConfig {
         http
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
-                .headers(headers -> headers.frameOptions().disable())
-                .authorizeHttpRequests()
-                .requestMatchers(getAntRequestMatchers()).permitAll()
-                .anyRequest()
-                .authenticated()
-                .and()
+                .headers(headers -> headers.frameOptions(Customizer.withDefaults()).disable())
+                .authorizeHttpRequests(auth -> auth.requestMatchers(getAntRequestMatchers()).permitAll()
+                    .anyRequest()
+                    .authenticated())
                 .logout(logout -> logout
                         .addLogoutHandler(logoutHandlerImpl)
                         .logoutUrl("/api/v1/logout")
                         .logoutSuccessHandler(logoutSuccessHandler))
                 .oauth2Login(login -> login
-                        .authorizationEndpoint()
+                        .authorizationEndpoint(t -> t.baseUri("/oauth2/authorize"))
                         // oauth2Login만 하면 필요없는데 추가설정 들어가니까 이 url 없으면 안됨
-                        .baseUri("/oauth2/authorize")
-                        .and()
                         .loginPage(loginPageUrl)
                         .successHandler(new AuthenticationSuccessHandlerImpl(loginSuccessHandler))
                         .failureHandler(new AuthenticationFailHandlerImpl())
-                        .userInfoEndpoint()
-                        .userService(oauth2UserService()));
+                        .userInfoEndpoint(
+                            t -> t.userService(oauth2UserService())
+                        ))
+                        ;
+                        
 
         // 필터 순서 중요 에러 필터는 에러 예상되는 필터보다 먼저 호출되어야한다.
         http.addFilterBefore(new ExceptionHandlerFilter(messageSource, objectMapper),
