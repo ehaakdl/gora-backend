@@ -4,6 +4,7 @@ plugins {
 	id 'jacoco'
 	id 'org.springframework.boot' version '3.1.4'
 	id 'io.spring.dependency-management' version '1.1.0'
+	id 'com.google.cloud.tools.jib' version '3.4.0'
 	// id "com.ewerk.gradle.plugins.querydsl" version '1.0.10'
 }
 
@@ -12,7 +13,10 @@ Reader reader = new FileReader(project.rootProject.file('src/main/resources/appl
 properties.load(reader)
 group = 'com.gora'
 version = properties.containsKey("app.version")
-sourceCompatibility = JavaVersion.VERSION_18
+java{
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
 
 repositories {
 	mavenCentral()
