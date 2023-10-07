@@ -1,4 +1,6 @@
-# 스펙: java(17), Spring boot(3.0.5)
+# 스펙
+- java(18)
+- Spring boot(3.1.4)
 
 # 기능
 - 계정 로그인,가입
