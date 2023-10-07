@@ -1,5 +1,5 @@
 # 스펙
-- java(18)
+- java(17)
 - Spring boot(3.1.4)
 
 # 기능
