@@ -109,7 +109,7 @@ jib{
 		image='openjdk:17-ea-slim-buster'
 	}
 	to {
-		image='backend'
+		image=rootProject.name
 		tags=[version]
 	}
 
