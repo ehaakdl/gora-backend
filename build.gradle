@@ -114,7 +114,7 @@ jib{
 	}
 
 	def envProp = new Properties()
-	file("/.docker/.env").withInputStream { envProp .load(it) }
+	file(".docker/.env").withInputStream { envProp .load(it) }
 	
 	def envMap = envProp.entrySet().collectEntries { entry ->
     [(entry.key): entry.value]

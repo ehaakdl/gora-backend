@@ -22,7 +22,7 @@
             "name": "BackendApplication",
             "request": "launch",
             "mainClass": "com.gora.backend.BackendApplication",
-            "projectName": "gora.backend",
+            "projectName": "backend",
             "vmArgs": [
                 "-Duser.timezone=GMT"
             ],

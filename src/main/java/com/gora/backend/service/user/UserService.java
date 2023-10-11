@@ -88,9 +88,11 @@ public class UserService {
     }
 
     @Transactional
-    public void verifyToken(String accessToken) {
+    public void verifyEmailToken(String accessToken) {
+        Date nowAt = new Date();
+
         TokenEntity tokenEntity = tokenRepository
-                .findByAccessAndTypeAndAccessExpireAtAfter(accessToken, eTokenUseDBType.email_verify, new Date())
+                .findByAccessAndTypeAndAccessExpireAtAfter(accessToken, eTokenUseDBType.email_verify, nowAt)
                 .orElse(null);
         if (tokenEntity == null) {
             throw new BadRequestException(ResponseCode.EXPIRED);
@@ -100,9 +102,8 @@ public class UserService {
         if (emailVerifyEntity == null) {
             throw new BadRequestException(ResponseCode.BAD_REQUEST);
         }
-
-        final long VALID_TIME = 1000 * 60 * 3;
-        Date verifiedExpiredAt = new Date(System.currentTimeMillis() + VALID_TIME);
+        
+        Date verifiedExpiredAt = new Date(nowAt.getTime() + eTokenType.EMAIL_VERIFY.getExpirePeriod());
         emailVerifyEntity.setVerifiedExpireAt(verifiedExpiredAt);
     }
 

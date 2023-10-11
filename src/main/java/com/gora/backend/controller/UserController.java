@@ -21,17 +21,28 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
+@Slf4j
 public class UserController {
     private final UserService userService;
 
     // todo 클라이언트에서 주기적으로 토큰 체크 담당한다. 이 부분은 웹소켓으로 처리하는게 옳다. 시간없으니 임시로 웹 요청으로 처리 
     // 클라이언트에 토큰을 체크한다.
     @GetMapping("/user/auth/token-status")
+    // @ResponseStatus(code = HttpStatus.OK)
     public void checkUserToken(HttpServletRequest request, HttpServletResponse response) {
+        log.info("inqewwq");  
+        response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        return;
+        // if(userService.checkLoginUserToken(request.getHeader(HttpHeaders.AUTHORIZATION))){
+        //     response.setStatus(HttpStatus.OK.value());
+        // }else{
+        //     response.setStatus(HttpStatus.UNAUTHORIZED.value());
+        // }
     }
 
     @PostMapping("/login")
@@ -49,7 +60,7 @@ public class UserController {
 
     @PostMapping("/user/email-verify")
     public CommonResponse emailVerify(@Valid @NotBlank @RequestParam String accessToken) {
-        userService.verifyToken(accessToken);
+        userService.verifyEmailToken(accessToken);
         return CommonResponse.builder().code(ResponseCode.SUCCESS.getCode()).build();
     }
 
