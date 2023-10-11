@@ -124,13 +124,11 @@ jib{
 	}.join(' ')
 	
 	container {
-		// mainClass='com.gora.backend.BackendApplication'
 		creationTime='USE_CURRENT_TIMESTAMP'
 		environment=envMap
 		jvmFlags = ['-Duser.timezone=GMT']
 		ports = [tomcatPort]
 		entrypoint=['java', cmdEnvArgs, '-jar', rootProject.name + '-' + version + '.jar']
-		// entrypoint=['java','-jar', 'test']
 	}
 
 	extraDirectories {
