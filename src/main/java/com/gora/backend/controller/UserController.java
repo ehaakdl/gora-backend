@@ -10,39 +10,33 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.gora.backend.common.ResponseCode;
+import com.gora.backend.exception.BadRequestException;
 import com.gora.backend.model.request.LoginRequest;
 import com.gora.backend.model.request.SignupRequest;
 import com.gora.backend.model.response.CommonResponse;
 import com.gora.backend.service.user.UserService;
 
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/v1")
 @RequiredArgsConstructor
-@Slf4j
 public class UserController {
     private final UserService userService;
 
-    // todo 클라이언트에서 주기적으로 토큰 체크 담당한다. 이 부분은 웹소켓으로 처리하는게 옳다. 시간없으니 임시로 웹 요청으로 처리 
-    // 클라이언트에 토큰을 체크한다.
-    @GetMapping("/user/auth/token-status")
-    // @ResponseStatus(code = HttpStatus.OK)
-    public void checkUserToken(HttpServletRequest request, HttpServletResponse response) {
-        log.info("inqewwq");  
-        response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        return;
-        // if(userService.checkLoginUserToken(request.getHeader(HttpHeaders.AUTHORIZATION))){
-        //     response.setStatus(HttpStatus.OK.value());
-        // }else{
-        //     response.setStatus(HttpStatus.UNAUTHORIZED.value());
-        // }
+    @GetMapping("user/social/accessToken")
+    @ResponseStatus(code = HttpStatus.OK)
+    public CommonResponse getOauthUserToken(@Valid @RequestParam String accessToken) {
+        
+        String token = userService.getSocialUserLoginToken(accessToken);
+        if(token == null){
+            throw new BadRequestException(ResponseCode.BAD_REQUEST);
+        }
+        
+        return CommonResponse.builder().data(token).build();
     }
 
     @PostMapping("/login")

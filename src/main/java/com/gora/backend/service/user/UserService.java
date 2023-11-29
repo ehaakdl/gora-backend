@@ -50,19 +50,19 @@ public class UserService {
     private final TokenCreator tokenCreator;
 
     @Transactional
-    public String login(String email, String password){
-        UserEntity user = userRepository.findByEmailAndType(email,eUserType.basic).orElse(null);
-        if(user == null){
+    public String login(String email, String password) {
+        UserEntity user = userRepository.findByEmailAndType(email, eUserType.basic).orElse(null);
+        if (user == null) {
             throw new BadRequestException(ResponseCode.BAD_REQUEST);
         }
-        
-        if(!passwordEncoder.matches(password, user.getPassword())){
+
+        if (!passwordEncoder.matches(password, user.getPassword())) {
             throw new BadRequestException(ResponseCode.BAD_REQUEST);
         }
 
         // 토큰 저장
         LoginTokenPair loginTokenPair = tokenCreator.createLoginToken(email, eUserType.basic);
-        if(loginTokenPair == null){
+        if (loginTokenPair == null) {
             throw new BadRequestException(ResponseCode.BAD_REQUEST);
         }
 
@@ -102,7 +102,7 @@ public class UserService {
         if (emailVerifyEntity == null) {
             throw new BadRequestException(ResponseCode.BAD_REQUEST);
         }
-        
+
         Date verifiedExpiredAt = new Date(nowAt.getTime() + eTokenType.EMAIL_VERIFY.getExpirePeriod());
         emailVerifyEntity.setVerifiedExpireAt(verifiedExpiredAt);
     }
@@ -122,16 +122,23 @@ public class UserService {
         emailService.send(EmailMessage.create(email, emailVerifyUrl, subject));
     }
 
-    public boolean checkLoginUserToken(@Valid @NotBlank String token) {
-        // 현재시간 + 5분 일때 만료 체크 
-        long FIVE_MIN = 1000 * 60 * 5;
-        TokenEntity tokenEntity = tokenRepository.findByAccessAndTypeAndAccessExpireAtAfter(token, eTokenUseDBType.login, new Date(System.currentTimeMillis() + FIVE_MIN))
-        .orElse(null);
-               
-        if(tokenEntity == null){
-            return false;
-        }else{
-            return true;
+    @Transactional
+    public String getSocialUserLoginToken(@Valid @NotBlank String token) {
+        Date nowAt = new Date();
+        TokenEntity tokenEntity = tokenRepository
+                .findByAccessAndTypeAndAccessExpireAtAfter(token, eTokenUseDBType.oauth_token, nowAt)
+                .orElse(null);
+
+        if (tokenEntity == null) {
+            return null;
         }
+        
+        tokenEntity = tokenRepository.findByUserAndTypeAndAccessExpireAtAfter(tokenEntity.getUser(),
+                eTokenUseDBType.login, nowAt).orElse(null);
+        if(tokenEntity == null){
+            return null;
+        }
+
+        return tokenEntity.getAccess();
     }
 }

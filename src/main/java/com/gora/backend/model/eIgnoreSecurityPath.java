@@ -21,6 +21,7 @@ public enum eIgnoreSecurityPath {
     , SIGNUP(AntPathRequestMatcher.antMatcher("/api/v1/signup"))
     , EMAIL_VERIFY_SEND(AntPathRequestMatcher.antMatcher("/api/v1/user/email/verify-send"))
     , EMAIL_VERIFY(AntPathRequestMatcher.antMatcher("/api/v1/user/email-verify"))
+    , USER_OAUTH_LOGIN_TOKEN(AntPathRequestMatcher.antMatcher("/api/v1/user/auth/oauth/login-token"))
     ;
 
     private final AntPathRequestMatcher requestMatcher;

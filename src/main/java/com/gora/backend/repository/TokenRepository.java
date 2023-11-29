@@ -6,10 +6,12 @@ import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import com.gora.backend.model.entity.TokenEntity;
+import com.gora.backend.model.entity.UserEntity;
 import com.gora.backend.model.entity.eTokenUseDBType;
 
 public interface TokenRepository extends JpaRepository<TokenEntity, Long> {
     Optional<TokenEntity> findByAccess(String accessToken);
+    Optional<TokenEntity> findByUserAndTypeAndAccessExpireAtAfter(UserEntity user, eTokenUseDBType type, Date accessExpireAt);
     Optional<TokenEntity> findByAccessAndTypeAndAccessExpireAtAfter(String accessToken, eTokenUseDBType type, Date accessExpireAt);
     void deleteByAccess(String accessToken);
     Optional<TokenEntity> findByAccessAndType(String accessToken, eTokenUseDBType type);
