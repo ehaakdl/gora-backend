@@ -27,7 +27,7 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
     private final UserService userService;
 
-    @GetMapping("user/social/accessToken")
+    @GetMapping("/user/social/accessToken")
     @ResponseStatus(code = HttpStatus.OK)
     public CommonResponse getOauthUserToken(@Valid @RequestParam String accessToken) {
         
