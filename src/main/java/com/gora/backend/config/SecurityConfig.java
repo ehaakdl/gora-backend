@@ -1,6 +1,6 @@
 package com.gora.backend.config;
 
-import static com.gora.backend.model.eIgnoreSecurityPath.*;
+import static com.gora.backend.model.eIgnoreSecurityPath.getAntRequestMatchers;
 
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
@@ -28,6 +28,7 @@ import com.gora.backend.filter.ExceptionHandlerFilter;
 import com.gora.backend.filter.JwtTokenAuthenticationFilter;
 import com.gora.backend.handler.LoginSuccessHandler;
 import com.gora.backend.model.eIgnoreSecurityPath;
+import com.gora.backend.repository.SocialUserRepository;
 import com.gora.backend.repository.TokenRepository;
 import com.gora.backend.repository.UserRepository;
 import com.gora.backend.repository.UserRoleRepository;
@@ -56,7 +57,8 @@ public class SecurityConfig {
     private final UserRoleRepository userRoleRepository;
     private final LogoutHandlerImpl logoutHandlerImpl;
     private final TokenCreator tokenCreator;
-
+    private final SocialUserRepository socialUserRepository;
+    
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -122,7 +124,7 @@ public class SecurityConfig {
 
     @Bean
     Oauth2UserService oauth2UserService() {
-        return new Oauth2UserService();
+        return new Oauth2UserService(tokenRepository, userRepository, socialUserRepository);
     }
 
     @Bean

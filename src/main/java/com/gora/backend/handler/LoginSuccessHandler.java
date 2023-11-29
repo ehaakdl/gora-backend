@@ -60,9 +60,7 @@ public class LoginSuccessHandler {
     }
 
     private UserEntity getSocialUser(String email) {
-        UserEntity user = userRepository.findByEmailAndType(email, eUserType.social).orElse(null);
-        return Objects.requireNonNullElseGet(user, () -> userRepository.save(
-                UserEntity.createSocialUser(email)));
+        return userRepository.findByEmailAndType(email, eUserType.social).orElse(null);
     }
 
     private eUserType getUserType(Authentication authentication) {
@@ -102,6 +100,9 @@ public class LoginSuccessHandler {
             user = getBasicUser(email, password);
         } else {
             user = getSocialUser(email);
+            if(user == null){
+                throw new RuntimeException();
+            }
         }
 
         roleRepository.findByCode(RoleCode.ROLE_PUBLIC).ifPresentOrElse((role) -> {

@@ -61,7 +61,8 @@ public class TokenEntity {
                 .build();
     }
 
-    public static TokenEntity createEmailVerifyToken(EmailVerifyEntity emailVerify, String access, Date accessExpireAt) {
+    public static TokenEntity createEmailVerifyToken(EmailVerifyEntity emailVerify, String access,
+            Date accessExpireAt) {
         TokenEntity tokenEntity = TokenEntity.builder()
                 .access(access)
                 .emailVerify(emailVerify)
@@ -72,5 +73,11 @@ public class TokenEntity {
         emailVerify.setToken(tokenEntity);
 
         return tokenEntity;
+    }
+
+    public static TokenEntity createOauthToken(String accesToken, Date accessExpireAt, UserEntity user) {
+        
+        return TokenEntity.builder().access(accesToken).type(eTokenUseDBType.oauth_token).user(user).accessExpireAt(accessExpireAt)
+                .build();
     }
 }
