@@ -9,20 +9,18 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @RequiredArgsConstructor
 public enum eIgnoreSecurityPath {
-    ICON(AntPathRequestMatcher.antMatcher("/*.ico"))
-    , ERROR(AntPathRequestMatcher.antMatcher("/error"))
-    , OAUTH2(AntPathRequestMatcher.antMatcher("/oauth2/**"))
-    , SWAGGER_PREFIX(AntPathRequestMatcher.antMatcher("/swagger-ui/**"))
-    , SWAGGER_DOCS(AntPathRequestMatcher.antMatcher("/docs"))
-    , SWAGGER_DOCS_PREFIX(AntPathRequestMatcher.antMatcher("/docs/**"))
-    , SWAGGER(AntPathRequestMatcher.antMatcher("/swagger-ui"))
-    , LOGOUT(AntPathRequestMatcher.antMatcher("/api/v1/logout"))
-    , LOGIN(AntPathRequestMatcher.antMatcher("/api/v1/login"))
-    , SIGNUP(AntPathRequestMatcher.antMatcher("/api/v1/signup"))
-    , EMAIL_VERIFY_SEND(AntPathRequestMatcher.antMatcher("/api/v1/user/email/verify-send"))
-    , EMAIL_VERIFY(AntPathRequestMatcher.antMatcher("/api/v1/user/email-verify"))
-    , USER_OAUTH_LOGIN_TOKEN(AntPathRequestMatcher.antMatcher("/api/v1/user/auth/oauth/login-token"))
-    ;
+    ICON(AntPathRequestMatcher.antMatcher("/*.ico")), ERROR(AntPathRequestMatcher.antMatcher("/error")),
+    OAUTH2(AntPathRequestMatcher.antMatcher("/oauth2/**")),
+    SWAGGER_PREFIX(AntPathRequestMatcher.antMatcher("/swagger-ui/**")),
+    SWAGGER_DOCS(AntPathRequestMatcher.antMatcher("/docs")),
+    SWAGGER_DOCS_PREFIX(AntPathRequestMatcher.antMatcher("/docs/**")),
+    SWAGGER(AntPathRequestMatcher.antMatcher("/swagger-ui")),
+    LOGOUT(AntPathRequestMatcher.antMatcher("/api/v1/logout")),
+    LOGIN(AntPathRequestMatcher.antMatcher("/api/v1/login")),
+    SIGNUP(AntPathRequestMatcher.antMatcher("/api/v1/signup")),
+    EMAIL_VERIFY_SEND(AntPathRequestMatcher.antMatcher("/api/v1/user/email/verify-send")),
+    EMAIL_VERIFY(AntPathRequestMatcher.antMatcher("/api/v1/user/email-verify")),
+    USER_OAUTH_LOGIN_TOKEN(AntPathRequestMatcher.antMatcher("/api/v1/user/social/accessToken"));
 
     private final AntPathRequestMatcher requestMatcher;
 
