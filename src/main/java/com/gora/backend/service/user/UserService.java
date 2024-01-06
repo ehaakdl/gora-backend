@@ -34,7 +34,44 @@ import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+// Note 승인코드 받기, 코드와 교환하여 구글 액세스 토큰 받기, 구글 계정 정보 가져오기, 
+/*
+ * private final SocialUserRepository socialUserRepository;
 
+    @RequiredArgsConstructor
+    @Getter
+    class SocialUserDTO {
+        private final String email;
+    }
+
+    public SocialUserDTO getSocialUserInfoByOauthAccessToken(String oauthAccessToken) {
+        return new SocialUserDTO("test@email.com");
+    }
+
+    @Transactional
+    public UserEntity saveSocialUser(SocialUserDTO socialUser) {
+
+        UserEntity user = userRepository.findByEmailAndType(socialUser.getEmail(), eUserType.social).orElse(null);
+        return Objects.requireNonNullElseGet(user, () -> {
+            UserEntity _user = userRepository.save(
+                    UserEntity.createSocialUser(socialUser.getEmail()));
+
+            eSocialType socialType = eSocialType.convert(socialUser.getEmail());
+            if (socialType == null) {
+                throw new RuntimeException();
+            }
+
+            socialUserRepository
+                    .save(SocialUserEntity.builder().updatedBy(-1L).updatedAt(new Date()).createdBy(-1L)
+                            .createdAt(new Date()).socialType(socialType).build());
+
+            // Date expiredAt = Date.from(oauth2Token.getExpiresAt());
+            // tokenRepository.save(TokenEntity.createOauthToken(token, expiredAt, user));
+
+            return _user;
+        });
+    }
+ */
 @Service
 @RequiredArgsConstructor
 public class UserService {

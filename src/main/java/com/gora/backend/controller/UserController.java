@@ -27,6 +27,15 @@ import lombok.RequiredArgsConstructor;
 public class UserController {
     private final UserService userService;
 
+    private final com.gora.backend.service.WebClientExample WebClientExample;
+    @GetMapping("/test")
+    @ResponseStatus(code = HttpStatus.OK)
+    public void test() {
+        
+        WebClientExample.makeRequest();
+        
+        
+    }
     @GetMapping("/user/social/accessToken")
     @ResponseStatus(code = HttpStatus.OK)
     public CommonResponse getOauthUserToken(@Valid @RequestParam String accessToken) {
