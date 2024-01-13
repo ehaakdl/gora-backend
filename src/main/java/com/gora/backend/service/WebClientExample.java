@@ -19,10 +19,12 @@ public class WebClientExample {
         body.add("grant_type", "authorization_code");
         body.add("scope", "");
         body.add("client_secret", "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");
-        body.add("code_verifier", "RxrwPdz5gcT2eOgcMuSCUIdPSrTH8GDZ1qUOOdTocUY");
+        // 로그인 할때 마다 바뀌는 값
+        body.add("code_verifier", "LN9ylPhmGBatItgF5-5kNRyjYSXvLcR77YgwlzxxA5M");
         body.add("client_id", "843307007567-4l6dtj4a0kl5fdi3meh51u1tko7fu7l7.apps.googleusercontent.com");
         body.add("redirect_uri", "http://localhost:8080/login/oauth2/code/google");
-        body.add("code", "4/0AfJohXl2smFtdCpz-Rr82TO6MMnv6gjsD6_gbIxLrWY58nZbc1S5ZfbH60N3RNSMlszRfA");
+        // 로그인 할때 마다 바뀌는 값
+        body.add("code", "4/0AfJohXkb9BwsdRtok6yc7I0K8qL7UYxUbPQXay6YLusooJpzhH1f0Q-mu_WNXfrIsrjpZA");
         // code=4/0AfJohXmaMv7Qwdp8Zc0G1mK2STiuGe8d98GKVcKv0LBSvuIrj9dZKP4sMoYT2os7RWNmug&redirect_uri=http%3A%2F%2F127.0.0.1%3A51767%2F&&code_verifier=&scope=&grant_type=authorization_code
         // ={0}&redirect_uri={1}&client_id={2}&code_verifier={3}&client_secret={4}
         Mono<String> response = webClientService.sendPostRequest(url, body, String.class);

@@ -7,6 +7,9 @@ import org.springframework.web.reactive.function.client.WebClient;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
+// Todo RestAPI 요청 함수 리팩토링하기
+// 응답 클래스, 요청 header에 따른 입력값 처리
+// 재사용 가능하게 설계하기
 
 @Service
 @RequiredArgsConstructor

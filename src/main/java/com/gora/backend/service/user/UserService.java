@@ -160,7 +160,11 @@ public class UserService {
     }
 
     @Transactional
-    public String getSocialUserLoginToken(@Valid @NotBlank String token) {
+    public String getSocialUserProfile(@Valid @NotBlank String socialToken) {
+        // 소셜 토큰 받기
+        // 디비에 넣기
+        // 이메일 기반 유저 생성
+        // 토큰 발급
         Date nowAt = new Date();
         TokenEntity tokenEntity = tokenRepository
                 .findByAccessAndTypeAndAccessExpireAtAfter(token, eTokenUseDBType.oauth_token, nowAt)

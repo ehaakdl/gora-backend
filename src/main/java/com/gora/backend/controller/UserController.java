@@ -36,11 +36,11 @@ public class UserController {
         
         
     }
-    @GetMapping("/user/social/accessToken")
+    @GetMapping("/user/social/setting")
     @ResponseStatus(code = HttpStatus.OK)
     public CommonResponse getOauthUserToken(@Valid @RequestParam String accessToken) {
         
-        String token = userService.getSocialUserLoginToken(accessToken);
+        String token = userService.getSocialUserProfile(accessToken);
         if(token == null){
             throw new BadRequestException(ResponseCode.BAD_REQUEST);
         }
