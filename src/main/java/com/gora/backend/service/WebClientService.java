@@ -1,15 +1,20 @@
 package com.gora.backend.service;
 
-import org.springframework.http.MediaType;
-import org.springframework.stereotype.Service;
-import org.springframework.util.MultiValueMap;
-import org.springframework.web.reactive.function.client.WebClient;
-
-import lombok.RequiredArgsConstructor;
-import reactor.core.publisher.Mono;
 // Todo RestAPI 요청 함수 리팩토링하기
 // 응답 클래스, 요청 header에 따른 입력값 처리
 // 재사용 가능하게 설계하기
+import java.util.function.Consumer;
+
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.lang.NonNull;
+import org.springframework.stereotype.Service;
+import org.springframework.util.MultiValueMap;
+import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.util.UriComponents;
+
+import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
 
 @Service
 @RequiredArgsConstructor
@@ -17,14 +22,20 @@ public class WebClientService {
 
     private final WebClient webClient;
 
-    public <T> Mono<T> sendGetRequest(String url, Class<T> responseType) {
+    public <T> Mono<T> sendGetRequest(@NonNull Consumer<HttpHeaders> headers, UriComponents uriComponents,
+            @NonNull Class<T> responseType) {
+        String url = uriComponents.getPath();
+        if (url == null) {
+            return null;
+        }
         return webClient.get()
                 .uri(url)
+                .headers(headers)
                 .retrieve()
                 .bodyToMono(responseType);
     }
 
-    public <T> Mono<T> sendPostRequest(String url, MultiValueMap<String, String> formMap,
+    public <T> Mono<T> sendPostRequest(@NonNull String url, MultiValueMap<String, String> formMap,
             Class<T> responseType) {
 
         return webClient.post()
@@ -34,7 +45,7 @@ public class WebClientService {
                 .bodyToMono(responseType);
     }
 
-    public <T> Mono<T> sendPostRequest(String url, Object request, Class<T> responseType) {
+    public <T> Mono<T> sendPostRequest(@NonNull String url, @NonNull Object request, @NonNull Class<T> responseType) {
         return webClient.post()
                 .uri(url)
                 .contentType(MediaType.APPLICATION_JSON)

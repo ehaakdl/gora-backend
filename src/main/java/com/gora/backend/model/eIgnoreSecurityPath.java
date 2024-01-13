@@ -20,12 +20,12 @@ public enum eIgnoreSecurityPath {
     SIGNUP(AntPathRequestMatcher.antMatcher("/api/v1/signup")),
     EMAIL_VERIFY_SEND(AntPathRequestMatcher.antMatcher("/api/v1/user/email/verify-send")),
     EMAIL_VERIFY(AntPathRequestMatcher.antMatcher("/api/v1/user/email-verify")),
-    USER_OAUTH_LOGIN_TOKEN(AntPathRequestMatcher.antMatcher("/api/v1/user/social/accessToken")),
-    test(AntPathRequestMatcher.antMatcher("/api/v1/test"));
+    USER_OAUTH_LOGIN_TOKEN(AntPathRequestMatcher.antMatcher("/api/v1/oauth2/authorize"));
 
     private final AntPathRequestMatcher requestMatcher;
-
-    public static AntPathRequestMatcher[] getAntRequestMatchers() {
+    public static final AntPathRequestMatcher[] urls = getAntRequestMatchers();
+    
+    private static AntPathRequestMatcher[] getAntRequestMatchers() {
         eIgnoreSecurityPath[] ignoreSecurityPaths = values();
         AntPathRequestMatcher[] resultList = new AntPathRequestMatcher[ignoreSecurityPaths.length];
 

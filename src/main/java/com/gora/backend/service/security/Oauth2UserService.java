@@ -3,6 +3,7 @@ package com.gora.backend.service.security;
 import java.time.Instant;
 import java.util.Date;
 import java.util.Objects;
+import java.util.concurrent.CompletableFuture;
 
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -23,7 +24,6 @@ import com.gora.backend.repository.TokenRepository;
 import com.gora.backend.repository.UserRepository;
 import com.gora.backend.service.WebClientService;
 
-import io.netty.util.concurrent.Future;
 import lombok.RequiredArgsConstructor;
 
 /*
@@ -55,11 +55,14 @@ public class Oauth2UserService extends DefaultOAuth2UserService {
 
     // todo 비동기로 구글 계정 정보 가져오는 함수 만들기
     @Async
-    public Future<String> loadUser(String socialAccessToken, Date issuedAt, Date expiredAt) {
+    public CompletableFuture<String> loadUser(String socialAccessToken, Date issuedAt, Date expiredAt) {
         Instant ee = Instant.ofEpochMilli(new Date(System.currentTimeMillis() + 10000000).getTime());
-    
-        OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(TokenType.BEARER, socialAccessToken, issuedAt,
-                expiredAt);
+
+        OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(TokenType.BEARER, socialAccessToken, ee,
+                ee);
+
+        return CompletableFuture.completedFuture("");
+
     }
 
     @Override

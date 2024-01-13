@@ -1,14 +1,19 @@
 package com.gora.backend.service.user;
 
+import java.time.Duration;
 import java.util.Date;
 import java.util.List;
 
 import org.springframework.context.MessageSource;
 import org.springframework.core.env.Environment;
+import org.springframework.http.HttpHeaders;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.util.UriComponents;
+import org.springframework.web.util.UriComponentsBuilder;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gora.backend.common.EnvironmentKey;
 import com.gora.backend.common.FrontUrl;
 import com.gora.backend.common.ResponseCode;
@@ -24,16 +29,20 @@ import com.gora.backend.model.entity.TokenEntity;
 import com.gora.backend.model.entity.UserEntity;
 import com.gora.backend.model.entity.eTokenUseDBType;
 import com.gora.backend.model.entity.eUserType;
+import com.gora.backend.model.response.oauth2.GoogleUserProfile;
 import com.gora.backend.repository.EmailVerifyCustomRepository;
 import com.gora.backend.repository.EmailVerifyRepository;
 import com.gora.backend.repository.TokenRepository;
 import com.gora.backend.repository.UserRepository;
 import com.gora.backend.service.EmailService;
+import com.gora.backend.service.WebClientService;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import lombok.RequiredArgsConstructor;
+import reactor.core.publisher.Mono;
+
 // Note 승인코드 받기, 코드와 교환하여 구글 액세스 토큰 받기, 구글 계정 정보 가져오기, 
 /*
  * private final SocialUserRepository socialUserRepository;
@@ -159,27 +168,54 @@ public class UserService {
         emailService.send(EmailMessage.create(email, emailVerifyUrl, subject));
     }
 
+    private final WebClientService webClientService;
+    private final ObjectMapper objectMapper;
+
     @Transactional
-    public String getSocialUserProfile(@Valid @NotBlank String socialToken) {
-        // 소셜 토큰 받기
+    public String getSocialUserProfile(@Valid @NotBlank String socialToken, Date expiredAt) {
+        String googleUserInfoUrl = "https://www.googleapis.com/oauth2/v1/userinfo";
+        UriComponents uriComponents = UriComponentsBuilder.fromUriString(googleUserInfoUrl)
+                .queryParam("alt", "json").build();
+        // 소셜 서버에서 계정 저보 가져오기
+        Mono<String> userInfoMonoResult = webClientService
+                .sendGetRequest(t -> t.add(HttpHeaders.AUTHORIZATION, socialToken), uriComponents, String.class);
+        String userInfoTypeString = userInfoMonoResult.block(Duration.ofSeconds(2));
+        try {
+            GoogleUserProfile userProfile = objectMapper.readValue(userInfoTypeString, GoogleUserProfile.class);
+            System.out.println(userProfile.getEmail());
+        } catch (Exception e) {
+
+        }
+
         // 디비에 넣기
         // 이메일 기반 유저 생성
+
+        UserEntity userEntity;
         // 토큰 발급
-        Date nowAt = new Date();
-        TokenEntity tokenEntity = tokenRepository
-                .findByAccessAndTypeAndAccessExpireAtAfter(token, eTokenUseDBType.oauth_token, nowAt)
-                .orElse(null);
 
-        if (tokenEntity == null) {
-            return null;
-        }
-        
-        tokenEntity = tokenRepository.findByUserAndTypeAndAccessExpireAtAfter(tokenEntity.getUser(),
-                eTokenUseDBType.login, nowAt).orElse(null);
-        if(tokenEntity == null){
-            return null;
-        }
+        // Date nowAt = new Date();
+        // TokenEntity tokenEntity = tokenRepository
+        // .findByAccessAndTypeAndAccessExpireAtAfter(socialToken,
+        // eTokenUseDBType.oauth_token, nowAt)
+        // .orElseGet(
+        // () -> {
+        // userEntity = userRepository.findByEmailAndType(useren, null)
+        // tokenRepository.save(TokenEntity.createOauthToken(socialToken, expiredAt,
+        // userEntity));
+        // }
+        // );
 
-        return tokenEntity.getAccess();
+        // if (tokenEntity == null) {
+        // return null;
+        // }
+
+        // tokenEntity =
+        // tokenRepository.findByUserAndTypeAndAccessExpireAtAfter(tokenEntity.getUser(),
+        // eTokenUseDBType.login, nowAt).orElse(null);
+        // if (tokenEntity == null) {
+        // return null;
+        // }
+        return null;
+        // return tokenEntity.getAccess();
     }
 }

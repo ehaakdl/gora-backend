@@ -1,5 +1,7 @@
 package com.gora.backend.controller;
 
+import java.util.Date;
+
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,6 +16,7 @@ import com.gora.backend.exception.BadRequestException;
 import com.gora.backend.model.request.LoginRequest;
 import com.gora.backend.model.request.SignupRequest;
 import com.gora.backend.model.response.CommonResponse;
+import com.gora.backend.service.security.Oauth2UserService;
 import com.gora.backend.service.user.UserService;
 
 import jakarta.validation.Valid;
@@ -26,25 +29,19 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class UserController {
     private final UserService userService;
+    private final Oauth2UserService oauth2UserService;
 
-    private final com.gora.backend.service.WebClientExample WebClientExample;
-    @GetMapping("/test")
+    // 소셜 로그인 유저 정보 저장및 토큰 발급
+    @GetMapping("/oauth2/authorize")
     @ResponseStatus(code = HttpStatus.OK)
-    public void test() {
-        
-        WebClientExample.makeRequest();
-        
-        
-    }
-    @GetMapping("/user/social/setting")
-    @ResponseStatus(code = HttpStatus.OK)
-    public CommonResponse getOauthUserToken(@Valid @RequestParam String accessToken) {
-        
-        String token = userService.getSocialUserProfile(accessToken);
-        if(token == null){
+    public CommonResponse getLoginTokenBySocialUser(@Valid @RequestParam String socialAccessToken,
+            @Valid @RequestParam Date issuedAt, @Valid @RequestParam Date expiredAt) {
+        oauth2UserService.loadUser(socialAccessToken, issuedAt, expiredAt);
+        String token = userService.getSocialUserProfile(socialAccessToken, expiredAt);
+        if (token == null) {
             throw new BadRequestException(ResponseCode.BAD_REQUEST);
         }
-        
+
         return CommonResponse.builder().data(token).build();
     }
 

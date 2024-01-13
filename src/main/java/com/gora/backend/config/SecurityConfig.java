@@ -1,7 +1,5 @@
 package com.gora.backend.config;
 
-import static com.gora.backend.model.eIgnoreSecurityPath.getAntRequestMatchers;
-
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -58,7 +56,7 @@ public class SecurityConfig {
     private final LogoutHandlerImpl logoutHandlerImpl;
     private final TokenCreator tokenCreator;
     private final SocialUserRepository socialUserRepository;
-    
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -84,9 +82,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .headers(headers -> headers.frameOptions(Customizer.withDefaults()).disable())
-                .authorizeHttpRequests(auth -> auth.requestMatchers(getAntRequestMatchers()).permitAll()
-                    .anyRequest()
-                    .authenticated())
+                .authorizeHttpRequests(auth -> auth.requestMatchers(eIgnoreSecurityPath.urls).permitAll()
+                        .anyRequest()
+                        .authenticated())
                 .logout(logout -> logout
                         .addLogoutHandler(logoutHandlerImpl)
                         .logoutUrl("/api/v1/logout")
@@ -98,16 +96,13 @@ public class SecurityConfig {
                         .successHandler(new AuthenticationSuccessHandlerImpl(loginSuccessHandler))
                         .failureHandler(new AuthenticationFailHandlerImpl())
                         .userInfoEndpoint(
-                            t -> t.userService(oauth2UserService())
-                        ))
-                        ;
-                        
+                                t -> t.userService(oauth2UserService())));
 
         // 필터 순서 중요 에러 필터는 에러 예상되는 필터보다 먼저 호출되어야한다.
         http.addFilterBefore(new ExceptionHandlerFilter(messageSource, objectMapper),
                 UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JwtTokenAuthenticationFilter(jwtTokenProvider(),
-                eIgnoreSecurityPath.getAntRequestMatchers(), tokenUtils, tokenCreator), UsernamePasswordAuthenticationFilter.class);
+                eIgnoreSecurityPath.urls, tokenUtils, tokenCreator), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
