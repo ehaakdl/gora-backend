@@ -121,7 +121,7 @@ public class SecurityConfig {
 
     @Bean
     Oauth2UserService oauth2UserService() {
-        return new Oauth2UserService(tokenRepository, userRepository, socialUserRepository, webClientService);
+        return new Oauth2UserService(tokenRepository, userRepository, socialUserRepository, webClientService, objectMapper);
     }
 
     @Bean

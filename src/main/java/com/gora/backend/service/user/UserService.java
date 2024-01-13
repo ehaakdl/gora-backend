@@ -174,19 +174,9 @@ public class UserService {
     @Transactional
     public String getSocialUserProfile(@Valid @NotBlank String socialToken, Date expiredAt) {
         String googleUserInfoUrl = "https://www.googleapis.com/oauth2/v1/userinfo";
-        UriComponents uriComponents = UriComponentsBuilder.fromUriString(googleUserInfoUrl)
-                .queryParam("alt", "json").build();
+        
         // 소셜 서버에서 계정 저보 가져오기
-        Mono<String> userInfoMonoResult = webClientService
-                .sendGetRequest(t -> t.add(HttpHeaders.AUTHORIZATION, socialToken), uriComponents, String.class);
-        String userInfoTypeString = userInfoMonoResult.block(Duration.ofSeconds(2));
-        try {
-            GoogleUserProfile userProfile = objectMapper.readValue(userInfoTypeString, GoogleUserProfile.class);
-            System.out.println(userProfile.getEmail());
-        } catch (Exception e) {
-
-        }
-
+        
         // 디비에 넣기
         // 이메일 기반 유저 생성
 
