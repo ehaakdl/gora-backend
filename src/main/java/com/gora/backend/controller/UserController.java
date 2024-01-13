@@ -2,6 +2,7 @@ package com.gora.backend.controller;
 
 import java.util.Date;
 
+import org.springframework.format.annotation.DateTimeFormat;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -33,10 +34,14 @@ public class UserController {
 
     // 소셜 로그인 유저 정보 저장및 토큰 발급
     @GetMapping("/oauth2/authorize")
-    @ResponseStatus(code = HttpStatus.OK)
-    public CommonResponse getLoginTokenBySocialUser(@Valid @RequestParam String socialAccessToken,
-            @Valid @RequestParam Date issuedAt, @Valid @RequestParam Date expiredAt) {
-        oauth2UserService.loadUser(socialAccessToken, issuedAt, expiredAt);
+    public CommonResponse getLoginTokenBySocialUser(
+            @RequestParam String registrationId, @RequestParam String socialAccessToken,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date issuedAt,
+            @RequestParam @DateTimeFormat(pattern = "yyyy-MM-dd HH:mm:ss") Date expiredAt,
+            @RequestParam String redirectionUri) {
+
+        oauth2UserService.loadUser(registrationId, socialAccessToken, issuedAt, expiredAt, redirectionUri);
+
         String token = userService.getSocialUserProfile(socialAccessToken, expiredAt);
         if (token == null) {
             throw new BadRequestException(ResponseCode.BAD_REQUEST);

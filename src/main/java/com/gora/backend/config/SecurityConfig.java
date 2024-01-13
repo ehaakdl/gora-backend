@@ -30,6 +30,7 @@ import com.gora.backend.repository.SocialUserRepository;
 import com.gora.backend.repository.TokenRepository;
 import com.gora.backend.repository.UserRepository;
 import com.gora.backend.repository.UserRoleRepository;
+import com.gora.backend.service.WebClientService;
 import com.gora.backend.service.security.AuthenticationFailHandlerImpl;
 import com.gora.backend.service.security.AuthenticationSuccessHandlerImpl;
 import com.gora.backend.service.security.JwtTokenProvider;
@@ -56,6 +57,7 @@ public class SecurityConfig {
     private final LogoutHandlerImpl logoutHandlerImpl;
     private final TokenCreator tokenCreator;
     private final SocialUserRepository socialUserRepository;
+    private final WebClientService webClientService;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -119,7 +121,7 @@ public class SecurityConfig {
 
     @Bean
     Oauth2UserService oauth2UserService() {
-        return new Oauth2UserService(tokenRepository, userRepository, socialUserRepository);
+        return new Oauth2UserService(tokenRepository, userRepository, socialUserRepository, webClientService);
     }
 
     @Bean

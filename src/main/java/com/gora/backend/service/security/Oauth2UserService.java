@@ -6,8 +6,10 @@ import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 
 import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.oauth2.client.registration.ClientRegistration;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
+import org.springframework.security.oauth2.core.AuthorizationGrantType;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
 import org.springframework.security.oauth2.core.OAuth2AccessToken.TokenType;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
@@ -53,13 +55,33 @@ public class Oauth2UserService extends DefaultOAuth2UserService {
         });
     }
 
-    // todo 비동기로 구글 계정 정보 가져오는 함수 만들기
+    // todo 여러 종류 소셜 로그인 지원 가능하게 만들기
     @Async
-    public CompletableFuture<String> loadUser(String socialAccessToken, Date issuedAt, Date expiredAt) {
-        Instant ee = Instant.ofEpochMilli(new Date(System.currentTimeMillis() + 10000000).getTime());
+    public CompletableFuture<String> loadUser(String registrationId, String socialAccessToken, Date issuedAt,
+            Date expiredAt, String redirectionUri) {
+        Instant issuedAtTypeInstant = Instant.ofEpochMilli(issuedAt.getTime());
+        Instant expiredAtTypeInstant = Instant.ofEpochMilli(expiredAt.getTime());
+        String clientSecret;
 
-        OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(TokenType.BEARER, socialAccessToken, ee,
-                ee);
+        if (registrationId.equals("google")) {
+            clientSecret = System.getenv("OAUTH_GOOGLE_CLIENT_SECRET");
+        } else {
+            throw new RuntimeException("지원 안하는 소셜 로그인");
+        }
+
+        OAuth2AccessToken oAuth2AccessToken = new OAuth2AccessToken(TokenType.BEARER, socialAccessToken,
+                issuedAtTypeInstant,
+                expiredAtTypeInstant);
+
+        ClientRegistration clientRegistration = ClientRegistration.withRegistrationId(registrationId)
+                .authorizationGrantType(AuthorizationGrantType.AUTHORIZATION_CODE)
+                .clientId(socialAccessToken)
+                .clientSecret(clientSecret)
+                .redirectUri(redirectionUri)
+                .build();
+
+        OAuth2UserRequest request = new OAuth2UserRequest(clientRegistration, oAuth2AccessToken);
+        super.loadUser(request);
 
         return CompletableFuture.completedFuture("");
 
