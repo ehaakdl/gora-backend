@@ -54,13 +54,13 @@ public class LoginSuccessHandler {
     }
 
     private UserEntity getBasicUser(String email, String password) {
-        UserEntity user = userRepository.findByEmailAndType(email, eUserType.basic).orElse(null);
+        UserEntity user = userRepository.findByEmail(email).orElse(null);
         return Objects.requireNonNullElseGet(user, () -> userRepository.save(
                 UserEntity.createBasicUser(password, email)));
     }
 
     private UserEntity getSocialUser(String email) {
-        return userRepository.findByEmailAndType(email, eUserType.social).orElse(null);
+        return userRepository.findByEmail(email).orElse(null);
     }
 
     private eUserType getUserType(Authentication authentication) {
@@ -100,7 +100,7 @@ public class LoginSuccessHandler {
             user = getBasicUser(email, password);
         } else {
             user = getSocialUser(email);
-            if(user == null){
+            if (user == null) {
                 throw new RuntimeException();
             }
         }

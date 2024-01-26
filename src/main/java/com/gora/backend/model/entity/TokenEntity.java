@@ -51,6 +51,11 @@ public class TokenEntity {
         this.emailVerify = emailVerify;
     }
 
+    public void updateOauth2Token(String token, Date expiredAt) {
+        this.access = token;
+        this.accessExpireAt = expiredAt;
+    }
+
     public static TokenEntity createLoginToken(UserEntity user, String access, String refresh, Date accessExpireAt) {
         return TokenEntity.builder()
                 .access(access)
@@ -75,9 +80,10 @@ public class TokenEntity {
         return tokenEntity;
     }
 
-    public static TokenEntity createOauthToken(String accesToken, Date accessExpireAt, UserEntity user) {
-        
-        return TokenEntity.builder().access(accesToken).type(eTokenUseDBType.oauth_token).user(user).accessExpireAt(accessExpireAt)
+    public static TokenEntity createOauth2Token(String accesToken, Date accessExpireAt, UserEntity user) {
+
+        return TokenEntity.builder().access(accesToken).type(eTokenUseDBType.oauth_token).user(user)
+                .accessExpireAt(accessExpireAt)
                 .build();
     }
 }

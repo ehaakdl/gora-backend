@@ -38,6 +38,7 @@ import com.gora.backend.service.security.LogoutHandlerImpl;
 import com.gora.backend.service.security.LogoutSuccessHandlerImpl;
 import com.gora.backend.service.security.Oauth2UserService;
 import com.gora.backend.service.security.UserDetailsServiceImpl;
+import com.gora.backend.service.user.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -58,6 +59,7 @@ public class SecurityConfig {
     private final TokenCreator tokenCreator;
     private final SocialUserRepository socialUserRepository;
     private final WebClientService webClientService;
+    private final UserService userService;
 
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
@@ -121,7 +123,8 @@ public class SecurityConfig {
 
     @Bean
     Oauth2UserService oauth2UserService() {
-        return new Oauth2UserService(tokenRepository, userRepository, socialUserRepository, webClientService, objectMapper);
+        return new Oauth2UserService(tokenRepository, userRepository, socialUserRepository, userService,
+                webClientService, objectMapper);
     }
 
     @Bean

@@ -2,11 +2,8 @@ package com.gora.backend.service.security;
 
 import java.time.Duration;
 import java.util.Date;
-import java.util.Objects;
-import java.util.concurrent.CompletableFuture;
 
 import org.springframework.http.HttpHeaders;
-import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.core.OAuth2AccessToken;
@@ -17,16 +14,15 @@ import org.springframework.web.util.UriComponents;
 import org.springframework.web.util.UriComponentsBuilder;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.gora.backend.model.entity.SocialUserEntity;
-import com.gora.backend.model.entity.TokenEntity;
+import com.gora.backend.common.ResponseCode;
+import com.gora.backend.exception.BadRequestException;
 import com.gora.backend.model.entity.UserEntity;
-import com.gora.backend.model.entity.eSocialType;
-import com.gora.backend.model.entity.eUserType;
 import com.gora.backend.model.response.oauth2.GoogleUserProfile;
 import com.gora.backend.repository.SocialUserRepository;
 import com.gora.backend.repository.TokenRepository;
 import com.gora.backend.repository.UserRepository;
 import com.gora.backend.service.WebClientService;
+import com.gora.backend.service.user.UserService;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
@@ -38,55 +34,37 @@ public class Oauth2UserService extends DefaultOAuth2UserService {
     private final TokenRepository tokenRepository;
     private final UserRepository userRepository;
     private final SocialUserRepository socialUserRepository;
+    private final UserService userService;
     private final WebClientService webClientService;
     private final ObjectMapper objectMapper;
 
-    private UserEntity updateSocialUser(String email) {
-        UserEntity user = userRepository.findByEmailAndType(email, eUserType.social).orElse(null);
-        return Objects.requireNonNullElseGet(user, () -> {
-            UserEntity _user = userRepository.save(
-                    UserEntity.createSocialUser(email));
-
-            eSocialType socialType = eSocialType.convert(email);
-            if (socialType == null) {
-                throw new RuntimeException();
-            }
-
-            socialUserRepository
-                    .save(SocialUserEntity.builder().updatedBy(-1L).updatedAt(new Date()).createdBy(-1L)
-                            .createdAt(new Date()).socialType(socialType).build());
-            return _user;
-        });
-    }
-
-    // todo 여러 종류 소셜 로그인 지원 가능하게 만들기
-    @Async
-    public CompletableFuture<String> loadUser(String registrationId, String socialAccessToken, Date issuedAt,
-            Date expiredAt, String redirectionUri) {
+    // todo 여러 종류 소셜 로그인 지원 가능하게 만들기, 비동기 코드로 작성
+    public GoogleUserProfile loadUser(String registrationId, String socialAccessToken) {
 
         if (registrationId.equals("google")) {
-            Object obj = sendGoogleUserProfileRequest(socialAccessToken);
-            int aa = 1;
+            return sendGoogleUserProfileRequest("Bearer" + socialAccessToken);
         } else {
             throw new RuntimeException("지원 안하는 소셜 로그인");
         }
-
-        return CompletableFuture.completedFuture("dqwe");
-
     }
 
     private GoogleUserProfile sendGoogleUserProfileRequest(String accessToken) {
         UriComponents uriComponents = UriComponentsBuilder
                 .fromUriString("https://www.googleapis.com/oauth2/v1/userinfo")
                 .queryParam("alt", "json").build();
-
         Mono<String> userInfoMonoResult = webClientService
                 .sendGetRequest(t -> t.add(HttpHeaders.AUTHORIZATION, accessToken), uriComponents,
                         String.class);
-
-        String userInfoTypeString = userInfoMonoResult.block(Duration.ofSeconds(2));
+        // webflux 에러 처리 방법 연구하기, 코드가 비효율적임
+        String userInfoTypeString;
         try {
-            return objectMapper.readValue(userInfoTypeString, GoogleUserProfile.class);
+            userInfoTypeString = userInfoMonoResult.block(Duration.ofSeconds(2));
+        } catch (Exception e) {
+            throw new BadRequestException(ResponseCode.BAD_REQUEST, "error.expiredToken");
+        }
+
+        try {
+            return objectMapper.readValue(userInfoTypeString.getBytes(), GoogleUserProfile.class);
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
@@ -101,8 +79,8 @@ public class Oauth2UserService extends DefaultOAuth2UserService {
 
         OAuth2User defaultOAuth2User = super.loadUser(userRequest);
         String email = defaultOAuth2User.getAttribute("email");
-        UserEntity user = updateSocialUser(email);
-        tokenRepository.save(TokenEntity.createOauthToken(token, expiredAt, user));
+        UserEntity user = userService.upsertSocialUser(email);
+        userService.upsertOauth2Token(user, token, expiredAt);
 
         return defaultOAuth2User;
     }
