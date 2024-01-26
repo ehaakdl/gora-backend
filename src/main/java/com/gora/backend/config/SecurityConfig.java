@@ -1,7 +1,5 @@
 package com.gora.backend.config;
 
-import static com.gora.backend.model.eIgnoreSecurityPath.getAntRequestMatchers;
-
 import org.springframework.context.MessageSource;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -32,6 +30,7 @@ import com.gora.backend.repository.SocialUserRepository;
 import com.gora.backend.repository.TokenRepository;
 import com.gora.backend.repository.UserRepository;
 import com.gora.backend.repository.UserRoleRepository;
+import com.gora.backend.service.WebClientService;
 import com.gora.backend.service.security.AuthenticationFailHandlerImpl;
 import com.gora.backend.service.security.AuthenticationSuccessHandlerImpl;
 import com.gora.backend.service.security.JwtTokenProvider;
@@ -39,6 +38,7 @@ import com.gora.backend.service.security.LogoutHandlerImpl;
 import com.gora.backend.service.security.LogoutSuccessHandlerImpl;
 import com.gora.backend.service.security.Oauth2UserService;
 import com.gora.backend.service.security.UserDetailsServiceImpl;
+import com.gora.backend.service.user.UserService;
 
 import lombok.RequiredArgsConstructor;
 
@@ -58,7 +58,9 @@ public class SecurityConfig {
     private final LogoutHandlerImpl logoutHandlerImpl;
     private final TokenCreator tokenCreator;
     private final SocialUserRepository socialUserRepository;
-    
+    private final WebClientService webClientService;
+    private final UserService userService;
+
     @Bean
     public CorsConfigurationSource corsConfigurationSource() {
         CorsConfiguration configuration = new CorsConfiguration();
@@ -84,9 +86,9 @@ public class SecurityConfig {
                 .csrf(csrf -> csrf.disable())
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .headers(headers -> headers.frameOptions(Customizer.withDefaults()).disable())
-                .authorizeHttpRequests(auth -> auth.requestMatchers(getAntRequestMatchers()).permitAll()
-                    .anyRequest()
-                    .authenticated())
+                .authorizeHttpRequests(auth -> auth.requestMatchers(eIgnoreSecurityPath.urls).permitAll()
+                        .anyRequest()
+                        .authenticated())
                 .logout(logout -> logout
                         .addLogoutHandler(logoutHandlerImpl)
                         .logoutUrl("/api/v1/logout")
@@ -98,16 +100,13 @@ public class SecurityConfig {
                         .successHandler(new AuthenticationSuccessHandlerImpl(loginSuccessHandler))
                         .failureHandler(new AuthenticationFailHandlerImpl())
                         .userInfoEndpoint(
-                            t -> t.userService(oauth2UserService())
-                        ))
-                        ;
-                        
+                                t -> t.userService(oauth2UserService())));
 
         // 필터 순서 중요 에러 필터는 에러 예상되는 필터보다 먼저 호출되어야한다.
         http.addFilterBefore(new ExceptionHandlerFilter(messageSource, objectMapper),
                 UsernamePasswordAuthenticationFilter.class);
         http.addFilterBefore(new JwtTokenAuthenticationFilter(jwtTokenProvider(),
-                eIgnoreSecurityPath.getAntRequestMatchers(), tokenUtils, tokenCreator), UsernamePasswordAuthenticationFilter.class);
+                eIgnoreSecurityPath.urls, tokenUtils, tokenCreator), UsernamePasswordAuthenticationFilter.class);
 
         return http.build();
     }
@@ -124,7 +123,8 @@ public class SecurityConfig {
 
     @Bean
     Oauth2UserService oauth2UserService() {
-        return new Oauth2UserService(tokenRepository, userRepository, socialUserRepository);
+        return new Oauth2UserService(tokenRepository, userRepository, socialUserRepository, userService,
+                webClientService, objectMapper);
     }
 
     @Bean

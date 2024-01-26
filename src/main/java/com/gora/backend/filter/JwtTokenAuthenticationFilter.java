@@ -32,6 +32,7 @@ public class JwtTokenAuthenticationFilter extends OncePerRequestFilter {
 
     private boolean ignoreSecurityPath(HttpServletRequest request) {
         for (RequestMatcher requestMatcher : ignoreSecurityRequestMatchers) {
+            log.info(requestMatcher.toString());
             if (requestMatcher.matcher(request).isMatch()) {
                 return true;
             }
