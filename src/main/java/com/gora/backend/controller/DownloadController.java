@@ -15,12 +15,10 @@ import com.gora.backend.common.ResponseCode;
 import com.gora.backend.exception.BadRequestException;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
 @RestController
 @RequestMapping("/api/v1/download")
 @RequiredArgsConstructor
-@Slf4j
 public class DownloadController {
     private final CommonUtils commonUtils;
 

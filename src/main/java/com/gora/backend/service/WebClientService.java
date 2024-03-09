@@ -25,9 +25,6 @@ public class WebClientService {
     public <T> Mono<T> sendGetRequest(@NonNull Consumer<HttpHeaders> headers, UriComponents uriComponents,
             @NonNull Class<T> responseType) {
         String url = uriComponents.getScheme() + "://" + uriComponents.getHost() + uriComponents.getPath();
-        if (url == null) {
-            return null;
-        }
         return webClient.get()
                 .uri(url)
                 .headers(headers)

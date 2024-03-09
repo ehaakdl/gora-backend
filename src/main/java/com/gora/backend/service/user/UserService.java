@@ -21,24 +21,24 @@ import com.gora.backend.exception.BadRequestException;
 import com.gora.backend.model.EmailMessage;
 import com.gora.backend.model.LoginTokenPair;
 import com.gora.backend.model.TokenInfoDto;
-import com.gora.backend.model.entity.EmailVerifyEntity;
-import com.gora.backend.model.entity.RoleEntity;
-import com.gora.backend.model.entity.SocialUserEntity;
-import com.gora.backend.model.entity.TokenEntity;
-import com.gora.backend.model.entity.UserEntity;
-import com.gora.backend.model.entity.UserRoleEntity;
-import com.gora.backend.model.entity.eSocialType;
-import com.gora.backend.model.entity.eTokenUseDBType;
-import com.gora.backend.model.entity.eUserType;
 import com.gora.backend.model.response.oauth2.GoogleUserProfile;
 import com.gora.backend.repository.EmailVerifyCustomRepository;
-import com.gora.backend.repository.EmailVerifyRepository;
-import com.gora.backend.repository.RoleRepository;
-import com.gora.backend.repository.SocialUserRepository;
-import com.gora.backend.repository.TokenRepository;
-import com.gora.backend.repository.UserRepository;
-import com.gora.backend.repository.UserRoleRepository;
 import com.gora.backend.service.EmailService;
+import com.gora.common.model.entity.EmailVerifyEntity;
+import com.gora.common.model.entity.RoleEntity;
+import com.gora.common.model.entity.SocialUserEntity;
+import com.gora.common.model.entity.TokenEntity;
+import com.gora.common.model.entity.UserEntity;
+import com.gora.common.model.entity.UserRoleEntity;
+import com.gora.common.model.entity.eSocialType;
+import com.gora.common.model.entity.eTokenUseDBType;
+import com.gora.common.model.entity.eUserType;
+import com.gora.common.repository.EmailVerifyRepository;
+import com.gora.common.repository.RoleRepository;
+import com.gora.common.repository.SocialUserRepository;
+import com.gora.common.repository.TokenRepository;
+import com.gora.common.repository.UserRepository;
+import com.gora.common.repository.UserRoleRepository;
 
 import jakarta.validation.Valid;
 import jakarta.validation.constraints.Email;
@@ -56,11 +56,11 @@ public class UserService {
     private final PasswordEncoder passwordEncoder;
     private final EmailVerifyRepository emailVerifyRepository;
     private final SocialUserRepository socialUserRepository;
-    private final EmailVerifyCustomRepository emailVerifyCustomRepository;
     private final EmailService emailService;
     private final TokenCreator tokenCreator;
     private final RoleRepository roleRepository;
     private final UserRoleRepository userRoleRepository;
+    private final EmailVerifyCustomRepository emailVerifyCustomRepository;
 
     @Transactional
     public UserEntity upsertSocialUser(String email) {

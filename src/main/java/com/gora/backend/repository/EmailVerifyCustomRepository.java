@@ -2,7 +2,7 @@ package com.gora.backend.repository;
 
 import org.springframework.stereotype.Repository;
 
-import com.gora.backend.model.entity.QEmailVerifyEntity;
+import com.gora.common.model.entity.QEmailVerifyEntity;
 import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 

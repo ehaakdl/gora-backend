@@ -6,23 +6,10 @@
     "configurations": [
         {
             "type": "java",
-            "name": "Oauth2UserService",
-            "request": "launch",
-            "mainClass": "com.gora.backend.service.security.Oauth2UserService",
-            "projectName": "gora-backend"
-        },
-        {
-            "type": "java",
             "name": "Attach to Remote Program",
             "request": "attach",
             "hostName": "localhost",
             "port": "5005"
-        },
-        {
-            "type": "java",
-            "name": "Current File",
-            "request": "launch",
-            "mainClass": "com.gora.backend.BackendApplication"
         },
         {
             "type": "java",

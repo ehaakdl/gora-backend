@@ -20,16 +20,12 @@ import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gora.backend.common.EnvironmentKey;
 import com.gora.backend.common.FrontUrl;
+import com.gora.backend.common.eIgnoreSecurityPath;
 import com.gora.backend.common.token.TokenCreator;
 import com.gora.backend.common.token.TokenUtils;
 import com.gora.backend.filter.ExceptionHandlerFilter;
 import com.gora.backend.filter.JwtTokenAuthenticationFilter;
 import com.gora.backend.handler.LoginSuccessHandler;
-import com.gora.backend.model.eIgnoreSecurityPath;
-import com.gora.backend.repository.SocialUserRepository;
-import com.gora.backend.repository.TokenRepository;
-import com.gora.backend.repository.UserRepository;
-import com.gora.backend.repository.UserRoleRepository;
 import com.gora.backend.service.WebClientService;
 import com.gora.backend.service.security.AuthenticationFailHandlerImpl;
 import com.gora.backend.service.security.AuthenticationSuccessHandlerImpl;
@@ -39,6 +35,10 @@ import com.gora.backend.service.security.LogoutSuccessHandlerImpl;
 import com.gora.backend.service.security.Oauth2UserService;
 import com.gora.backend.service.security.UserDetailsServiceImpl;
 import com.gora.backend.service.user.UserService;
+import com.gora.common.repository.SocialUserRepository;
+import com.gora.common.repository.TokenRepository;
+import com.gora.common.repository.UserRepository;
+import com.gora.common.repository.UserRoleRepository;
 
 import lombok.RequiredArgsConstructor;
 

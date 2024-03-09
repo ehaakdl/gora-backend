@@ -16,13 +16,13 @@ import org.springframework.web.util.UriComponentsBuilder;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gora.backend.common.ResponseCode;
 import com.gora.backend.exception.BadRequestException;
-import com.gora.backend.model.entity.UserEntity;
 import com.gora.backend.model.response.oauth2.GoogleUserProfile;
-import com.gora.backend.repository.SocialUserRepository;
-import com.gora.backend.repository.TokenRepository;
-import com.gora.backend.repository.UserRepository;
 import com.gora.backend.service.WebClientService;
 import com.gora.backend.service.user.UserService;
+import com.gora.common.model.entity.UserEntity;
+import com.gora.common.repository.SocialUserRepository;
+import com.gora.common.repository.TokenRepository;
+import com.gora.common.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;

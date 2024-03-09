@@ -7,13 +7,11 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.gora.backend.common.ResponseCode;
 import com.gora.backend.exception.BadRequestException;
-import com.gora.backend.model.entity.TokenEntity;
-import com.gora.backend.repository.TokenRepository;
+import com.gora.common.model.entity.TokenEntity;
+import com.gora.common.repository.TokenRepository;
 
 import lombok.RequiredArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
 
-@Slf4j
 @RequiredArgsConstructor
 public class JwtTokenProvider {
     private final UserDetailsServiceImpl UserDetailsServiceImpl;

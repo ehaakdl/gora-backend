@@ -10,12 +10,12 @@ import org.springframework.transaction.annotation.Transactional;
 import com.gora.backend.common.TokenClaimsName;
 import com.gora.backend.model.LoginTokenPair;
 import com.gora.backend.model.TokenInfoDto;
-import com.gora.backend.model.entity.TokenEntity;
-import com.gora.backend.model.entity.UserEntity;
-import com.gora.backend.model.entity.eTokenUseDBType;
-import com.gora.backend.model.entity.eUserType;
-import com.gora.backend.repository.TokenRepository;
-import com.gora.backend.repository.UserRepository;
+import com.gora.common.model.entity.TokenEntity;
+import com.gora.common.model.entity.UserEntity;
+import com.gora.common.model.entity.eTokenUseDBType;
+import com.gora.common.model.entity.eUserType;
+import com.gora.common.repository.TokenRepository;
+import com.gora.common.repository.UserRepository;
 
 import lombok.RequiredArgsConstructor;
 

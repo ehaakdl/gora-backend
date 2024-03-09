@@ -1,17 +1,21 @@
 package com.gora.backend.service.security;
 
-import com.gora.backend.model.entity.UserEntity;
-import com.gora.backend.repository.UserRepository;
-import com.gora.backend.repository.UserRoleRepository;
-
-import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang3.StringUtils;
-import org.springframework.security.core.authority.SimpleGrantedAuthority;
-import org.springframework.security.core.userdetails.*;
-import org.springframework.transaction.annotation.Transactional;
-
 import java.util.ArrayList;
 import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.User;
+import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.userdetails.UserDetailsService;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
+import org.springframework.transaction.annotation.Transactional;
+
+import com.gora.common.model.entity.UserEntity;
+import com.gora.common.repository.UserRepository;
+import com.gora.common.repository.UserRoleRepository;
+
+import lombok.RequiredArgsConstructor;
 
 @RequiredArgsConstructor
 public class UserDetailsServiceImpl implements UserDetailsService {
