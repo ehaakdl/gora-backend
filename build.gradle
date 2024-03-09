@@ -10,7 +10,7 @@ plugins {
 
 
 def yaml = new Yaml()
-def applicationYaml = yaml.load(new FileReader(project.rootProject.file('module-backend/src/main/resources/application.yml')))
+def applicationYaml = yaml.load(new FileReader(project.rootProject.file('gora-backend/src/main/resources/application.yml')))
 
 group = 'com.gora'
 version = applicationYaml['app']['version']
@@ -35,7 +35,7 @@ bootJar{
 }
 
 dependencies {
-	implementation project(':module-common')
+	implementation project(':gora-common')
 	
 	implementation 'org.springframework.boot:spring-boot-starter-actuator'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
