@@ -20,10 +20,6 @@ import com.gora.backend.model.response.oauth2.GoogleUserProfile;
 import com.gora.backend.service.WebClientService;
 import com.gora.backend.service.user.UserService;
 import com.gora.common.model.entity.UserEntity;
-import com.gora.common.repository.SocialUserRepository;
-import com.gora.common.repository.TokenRepository;
-import com.gora.common.repository.UserRepository;
-
 import lombok.RequiredArgsConstructor;
 import reactor.core.publisher.Mono;
 
@@ -31,9 +27,6 @@ import reactor.core.publisher.Mono;
 * oauth2 서버에 access token으로 유저 정보 요청하는 곳*/
 @RequiredArgsConstructor
 public class Oauth2UserService extends DefaultOAuth2UserService {
-    private final TokenRepository tokenRepository;
-    private final UserRepository userRepository;
-    private final SocialUserRepository socialUserRepository;
     private final UserService userService;
     private final WebClientService webClientService;
     private final ObjectMapper objectMapper;

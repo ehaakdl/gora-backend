@@ -35,7 +35,6 @@ import com.gora.backend.service.security.LogoutSuccessHandlerImpl;
 import com.gora.backend.service.security.Oauth2UserService;
 import com.gora.backend.service.security.UserDetailsServiceImpl;
 import com.gora.backend.service.user.UserService;
-import com.gora.common.repository.SocialUserRepository;
 import com.gora.common.repository.TokenRepository;
 import com.gora.common.repository.UserRepository;
 import com.gora.common.repository.UserRoleRepository;
@@ -57,7 +56,6 @@ public class SecurityConfig {
     private final UserRoleRepository userRoleRepository;
     private final LogoutHandlerImpl logoutHandlerImpl;
     private final TokenCreator tokenCreator;
-    private final SocialUserRepository socialUserRepository;
     private final WebClientService webClientService;
     private final UserService userService;
 
@@ -123,7 +121,7 @@ public class SecurityConfig {
 
     @Bean
     Oauth2UserService oauth2UserService() {
-        return new Oauth2UserService(tokenRepository, userRepository, socialUserRepository, userService,
+        return new Oauth2UserService(userService,
                 webClientService, objectMapper);
     }
 
